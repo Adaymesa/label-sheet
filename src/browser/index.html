@@ -38,6 +38,11 @@
     </div>
   </div>
 
+  <p id="printHint" class="print-hint" role="status" hidden>
+    This page is embedded, so the Print button is blocked here. Open it in its own browser
+    tab and press <kbd id="printKey">Cmd</kbd>+<kbd>P</kbd>, or save the page and open the file directly.
+  </p>
+
   <p id="empty" class="empty">Nothing added yet.</p>
 
   <section class="paper" aria-label="Sheet preview">
@@ -176,6 +181,18 @@
   }
   .toggle input { accent-color: var(--accent); cursor: pointer; }
 
+  .print-hint {
+    margin: 0; padding: .85rem 1.1rem;
+    background: var(--accent-wash); border: 1px solid var(--accent);
+    border-radius: 10px; font-size: .92rem; line-height: 1.5;
+  }
+  .print-hint[hidden] { display: none; }
+  .print-hint kbd {
+    font: 600 .85em ui-monospace, SFMono-Regular, Menlo, monospace;
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 4px; padding: .1em .4em;
+  }
+
   .empty { color: var(--muted); text-align: center; padding: 1.5rem 0; margin: 0; }
   body.has-labels .empty { display: none; }
 
@@ -231,7 +248,7 @@
     @page { size: A4 portrait; margin: 11mm; }
     body { background: #fff; color: #000; }
     .app { max-width: none; margin: 0; padding: 0; gap: 0; }
-    .masthead, .dropzone, .progress, .problems, .toolbar, .empty, .footnote,
+    .masthead, .dropzone, .progress, .problems, .toolbar, .empty, .footnote, .print-hint,
     .parcel-remove { display: none !important; }
     .paper, body.has-labels .paper {
       display: block; border: 0; border-radius: 0; padding: 0; box-shadow: none; background: #fff;

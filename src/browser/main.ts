@@ -54,6 +54,7 @@ const printButton = $<HTMLButtonElement>('print');
 const clearButton = $<HTMLButtonElement>('clear');
 const showTracking = $<HTMLInputElement>('showTracking');
 const showTrackingLabel = $<HTMLLabelElement>('showTrackingLabel');
+const printHint = $<HTMLParagraphElement>('printHint');
 const progress = $<HTMLDivElement>('progress');
 const progressBar = $<HTMLDivElement>('progressBar');
 const progressText = $<HTMLParagraphElement>('progressText');
@@ -241,7 +242,33 @@ window.addEventListener('drop', (event) => {
 });
 
 showTracking.addEventListener('change', render);
-printButton.addEventListener('click', () => window.print());
+
+/**
+ * Embedded in an iframe (a preview pane, say) the browser blocks window.print(), and the
+ * button would just look broken. Say so instead, and offer the keyboard shortcut.
+ */
+const isEmbedded = (): boolean => {
+  try {
+    return window.self !== window.top;
+  } catch {
+    return true; // cross-origin parent — definitely embedded
+  }
+};
+
+const isMac = /mac/i.test(navigator.platform || navigator.userAgent);
+$<HTMLElement>('printKey').textContent = isMac ? 'Cmd' : 'Ctrl';
+
+printButton.addEventListener('click', () => {
+  if (isEmbedded()) {
+    printHint.hidden = false;
+    return;
+  }
+  try {
+    window.print();
+  } catch {
+    printHint.hidden = false;
+  }
+});
 clearButton.addEventListener('click', () => {
   labels.length = 0;
   failures.length = 0;
