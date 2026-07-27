@@ -1,0 +1,118 @@
+{
+  "width": 411,
+  "height": 283,
+  "items": [
+    {
+      "text": "LX554473974ES",
+      "x": 168.99,
+      "y": 263.44,
+      "width": 68.02,
+      "height": 9
+    },
+    {
+      "text": "Devolver al remitente / Return to sender",
+      "x": 236,
+      "y": 152.5,
+      "width": 141.74,
+      "height": 8
+    },
+    {
+      "text": "Abandonar / Treat as abandoned",
+      "x": 236,
+      "y": 162.5,
+      "width": 117.34,
+      "height": 8
+    },
+    {
+      "text": "EN CASO DE NO ENTREGA / IN CASE OF NON DELIVERY",
+      "x": 225,
+      "y": 143.63,
+      "width": 163.5,
+      "height": 6
+    },
+    {
+      "text": "FROM",
+      "x": 16.13,
+      "y": 41.71,
+      "width": 29.42,
+      "height": 10
+    },
+    {
+      "text": "TO",
+      "x": 6.06,
+      "y": 102.38,
+      "width": 13.87,
+      "height": 10
+    },
+    {
+      "text": "calle olivar 24",
+      "x": 26.22,
+      "y": 24.5,
+      "width": 58.67,
+      "height": 8
+    },
+    {
+      "text": "35310 MONTE LENTISCAL",
+      "x": 24,
+      "y": 35.5,
+      "width": 99.06,
+      "height": 8
+    },
+    {
+      "text": "208 NW 12th Ave.",
+      "x": 26,
+      "y": 102.5,
+      "width": 58.18,
+      "height": 8
+    },
+    {
+      "text": "97756 REDMOND",
+      "x": 27,
+      "y": 113.5,
+      "width": 65.77,
+      "height": 8
+    },
+    {
+      "text": "USA",
+      "x": 28,
+      "y": 124.5,
+      "width": 16.43,
+      "height": 8
+    },
+    {
+      "text": "0,29 Kg",
+      "x": 72.17,
+      "y": 161.63,
+      "width": 20.66,
+      "height": 6
+    },
+    {
+      "text": "Mariana Ortega",
+      "x": 24,
+      "y": 2.5,
+      "width": 63.55,
+      "height": 8
+    },
+    {
+      "text": "Rebecca Dunn",
+      "x": 27,
+      "y": 79.5,
+      "width": 45.32,
+      "height": 8
+    },
+    {
+      "text": "+15550147203",
+      "x": 327,
+      "y": 79.5,
+      "width": 53.59,
+      "height": 8
+    },
+    {
+      "text": "Cust Ref:",
+      "x": 24,
+      "y": 57.5,
+      "width": 33.31,
+      "height": 8
+    }
+  ]
+}

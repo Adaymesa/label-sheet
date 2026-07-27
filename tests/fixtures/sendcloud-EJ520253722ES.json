@@ -1,0 +1,146 @@
+{
+  "width": 283,
+  "height": 411,
+  "items": [
+    {
+      "text": "En caso de no entrega / In case of non delivery:",
+      "x": 143,
+      "y": 192.73,
+      "width": 113.09,
+      "height": 5
+    },
+    {
+      "text": "Devolver al remitente / Return to sender",
+      "x": 156,
+      "y": 203.73,
+      "width": 94.75,
+      "height": 5
+    },
+    {
+      "text": "Abandonar / Treat as abandoned.",
+      "x": 156,
+      "y": 214.73,
+      "width": 79.18,
+      "height": 5
+    },
+    {
+      "text": "TO",
+      "x": 6.78,
+      "y": 165.85,
+      "width": 19.45,
+      "height": 14
+    },
+    {
+      "text": "FROM",
+      "x": 15.96,
+      "y": 97.72,
+      "width": 29.44,
+      "height": 10
+    },
+    {
+      "text": "CAN",
+      "x": 40,
+      "y": 202.27,
+      "width": 16.89,
+      "height": 8
+    },
+    {
+      "text": "TORONTO",
+      "x": 40,
+      "y": 180.27,
+      "width": 40,
+      "height": 8
+    },
+    {
+      "text": "410B 88 Queen West St",
+      "x": 40,
+      "y": 170.27,
+      "width": 93.39,
+      "height": 8
+    },
+    {
+      "text": "Min-Seo Han",
+      "x": 40,
+      "y": 136.62,
+      "width": 72.04,
+      "height": 9
+    },
+    {
+      "text": "Sofia Vandermeer",
+      "x": 30,
+      "y": 76.42,
+      "width": 57.2,
+      "height": 7
+    },
+    {
+      "text": "Sofia Vandermeer",
+      "x": 30,
+      "y": 64.42,
+      "width": 57.2,
+      "height": 7
+    },
+    {
+      "text": "Calle Olivar 24",
+      "x": 30,
+      "y": 88.42,
+      "width": 54.08,
+      "height": 7
+    },
+    {
+      "text": "35310 Santa brigida ESP",
+      "x": 30,
+      "y": 106.42,
+      "width": 78.6,
+      "height": 7
+    },
+    {
+      "text": "+15550164820",
+      "x": 214.85,
+      "y": 129.38,
+      "width": 60.3,
+      "height": 9
+    },
+    {
+      "text": "+34600000000",
+      "x": 212.85,
+      "y": 66.38,
+      "width": 60.3,
+      "height": 9
+    },
+    {
+      "text": "4,3 Kg",
+      "x": 38,
+      "y": 253.77,
+      "width": 24.01,
+      "height": 8
+    },
+    {
+      "text": "EJ520253722ES",
+      "x": 104.48,
+      "y": 380.46,
+      "width": 75.05,
+      "height": 10
+    },
+    {
+      "text": "1000",
+      "x": 213,
+      "y": 106.42,
+      "width": 15.57,
+      "height": 7
+    },
+    {
+      "text": "Ref.:",
+      "x": 193,
+      "y": 106.42,
+      "width": 14.78,
+      "height": 7
+    },
+    {
+      "text": "M5S 2E8",
+      "x": 40,
+      "y": 191.27,
+      "width": 32.9,
+      "height": 8
+    }
+  ]
+}

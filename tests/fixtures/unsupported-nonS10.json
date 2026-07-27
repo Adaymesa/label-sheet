@@ -1,0 +1,181 @@
+{
+  "width": 400,
+  "height": 283,
+  "items": [
+    {
+      "text": "Remitente",
+      "x": 19.27,
+      "y": 68.24,
+      "width": 43.49,
+      "height": 9
+    },
+    {
+      "text": "Sofia Vandermeer",
+      "x": 26,
+      "y": 32.73,
+      "width": 49.02,
+      "height": 6
+    },
+    {
+      "text": "Sofia Vandermeer",
+      "x": 26,
+      "y": 41.73,
+      "width": 49.02,
+      "height": 6
+    },
+    {
+      "text": "Calle Olivar 24",
+      "x": 26,
+      "y": 50.73,
+      "width": 46.34,
+      "height": 6
+    },
+    {
+      "text": "35310 Santa brigida",
+      "x": 26,
+      "y": 60.73,
+      "width": 53.68,
+      "height": 6
+    },
+    {
+      "text": "LAS PALMAS",
+      "x": 26,
+      "y": 69.73,
+      "width": 37.31,
+      "height": 6
+    },
+    {
+      "text": "REF: 1000000000",
+      "x": 26,
+      "y": 78.73,
+      "width": 48.67,
+      "height": 6
+    },
+    {
+      "text": "Destinatario",
+      "x": 19.27,
+      "y": 145.99,
+      "width": 51.98,
+      "height": 9
+    },
+    {
+      "text": "Nora Brandt",
+      "x": 26,
+      "y": 105.73,
+      "width": 27.66,
+      "height": 6
+    },
+    {
+      "text": "Carrer de l'Aurora 18",
+      "x": 26,
+      "y": 119.73,
+      "width": 55.47,
+      "height": 6
+    },
+    {
+      "text": "08410",
+      "x": 23,
+      "y": 129.88,
+      "width": 27.8,
+      "height": 10
+    },
+    {
+      "text": "Vilanova del Vallès",
+      "x": 80,
+      "y": 129.88,
+      "width": 89.93,
+      "height": 10
+    },
+    {
+      "text": "BARCELONA",
+      "x": 23,
+      "y": 141.88,
+      "width": 63.85,
+      "height": 10
+    },
+    {
+      "text": "Observaciones:",
+      "x": 23,
+      "y": 162.63,
+      "width": 41.67,
+      "height": 6
+    },
+    {
+      "text": "Código de Bulto: PQ6AA49800574520108410T",
+      "x": 23,
+      "y": 176.44,
+      "width": 189.52,
+      "height": 9
+    },
+    {
+      "text": "EXPEDICIÓN: PQ6AA4980057452H",
+      "x": 238.52,
+      "y": 7.44,
+      "width": 146.95,
+      "height": 9
+    },
+    {
+      "text": "Valores añadidos",
+      "x": 231,
+      "y": 122.9,
+      "width": 66.18,
+      "height": 8
+    },
+    {
+      "text": "Bulto:",
+      "x": 332,
+      "y": 176.63,
+      "width": 17.31,
+      "height": 6
+    },
+    {
+      "text": "1 / 1",
+      "x": 332,
+      "y": 185.63,
+      "width": 11.66,
+      "height": 6
+    },
+    {
+      "text": "Peso (Kg):",
+      "x": 332,
+      "y": 200.63,
+      "width": 29.98,
+      "height": 6
+    },
+    {
+      "text": "0,18",
+      "x": 332,
+      "y": 209.63,
+      "width": 11.67,
+      "height": 6
+    },
+    {
+      "text": "Peso vol. (Kg):",
+      "x": 332,
+      "y": 226.63,
+      "width": 41.96,
+      "height": 6
+    },
+    {
+      "text": "0,37",
+      "x": 332,
+      "y": 235.63,
+      "width": 11.67,
+      "height": 6
+    },
+    {
+      "text": "Fecha etiquetado:",
+      "x": 332,
+      "y": 252.63,
+      "width": 51.29,
+      "height": 6
+    },
+    {
+      "text": "04/06/2026",
+      "x": 332,
+      "y": 261.63,
+      "width": 30.01,
+      "height": 6
+    }
+  ]
+}
