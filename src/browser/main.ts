@@ -65,9 +65,24 @@ const progressText = $<HTMLParagraphElement>('progressText');
  */
 const PARCELS_PER_PAGE = 16;
 
-/** Yield to the browser so the progress bar actually paints between files. */
-const nextFrame = (): Promise<void> =>
-  new Promise((resolve) => requestAnimationFrame(() => resolve()));
+/**
+ * Yield so the progress bar paints between files.
+ *
+ * requestAnimationFrame alone is not enough: browsers stop firing it in a background or
+ * occluded tab, which would stall the whole run the moment she switches tabs. Race it
+ * against a timer so work always continues.
+ */
+const yieldToBrowser = (): Promise<void> =>
+  new Promise((resolve) => {
+    let settled = false;
+    const finish = (): void => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+    requestAnimationFrame(finish);
+    setTimeout(finish, 50);
+  });
 
 async function addFiles(files: readonly File[]): Promise<void> {
   const pdfs = files.filter((f) => f.name.toLowerCase().endsWith('.pdf'));
@@ -83,7 +98,7 @@ async function addFiles(files: readonly File[]): Promise<void> {
     progress.hidden = false;
     progressBar.style.width = '0%';
     progressText.textContent = `Reading ${pdfs.length} labels...`;
-    await nextFrame();
+    await yieldToBrowser();
   }
 
   let done = 0;
@@ -91,7 +106,7 @@ async function addFiles(files: readonly File[]): Promise<void> {
     if (showProgress) {
       progressText.textContent = `Reading label ${done + 1} of ${pdfs.length}`;
       progressBar.style.width = `${(done / pdfs.length) * 100}%`;
-      await nextFrame();
+      await yieldToBrowser();
     }
     done++;
 
