@@ -10,8 +10,8 @@
     "build": "tsx scripts/build.ts",
     "fixtures": "tsx scripts/makeFixtures.ts",
     "typecheck": "tsc --noEmit",
-    "test": "vitest",
-    "test:run": "vitest run"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "pdfjs-dist": "^4.10.38"
