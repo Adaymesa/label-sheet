@@ -1,0 +1,242 @@
+<title>Label sheet</title>
+
+<main class="app">
+  <header class="masthead">
+    <p class="eyebrow">BohemeFolk</p>
+    <h1>Label sheet</h1>
+    <p class="lede">Drop today's shipping labels below. You get one page with every barcode on it, to hand over at the counter.</p>
+  </header>
+
+  <div id="dropzone" class="dropzone" tabindex="0" role="button"
+       aria-label="Drop shipping label PDFs here, or press Enter to choose files">
+    <svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 16V4m0 0L8 8m4-4 4 4" />
+      <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+    </svg>
+    <p class="dropzone-title">Drop shipping labels here</p>
+    <p class="dropzone-hint">or click to choose them</p>
+    <input id="picker" type="file" accept="application/pdf,.pdf" multiple hidden />
+  </div>
+
+  <div id="progress" class="progress" role="status" aria-live="polite" hidden>
+    <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+    <p id="progressText" class="progress-text"></p>
+  </div>
+
+  <div id="problems" class="problems" role="status" aria-live="polite"></div>
+
+  <div class="toolbar">
+    <p id="summary" class="summary" role="status" aria-live="polite"></p>
+    <div class="toolbar-actions">
+      <label id="showTrackingLabel" class="toggle" hidden>
+        <input id="showTracking" type="checkbox" />
+        Show tracking numbers
+      </label>
+      <button id="clear" type="button" class="ghost" hidden>Start over</button>
+      <button id="print" type="button" class="primary" disabled>Print sheet</button>
+    </div>
+  </div>
+
+  <p id="empty" class="empty">Nothing added yet.</p>
+
+  <section class="paper" aria-label="Sheet preview">
+    <div id="sheet" class="sheet"></div>
+  </section>
+
+  <footer class="footnote">
+    <p>Your labels stay on this computer &mdash; they are read here in the browser and never uploaded.</p>
+  </footer>
+</main>
+
+<style>
+  /* Warm paper neutrals, because the thing this produces is paper.
+     Accent is a deep dispatch teal rather than a default UI blue. */
+  :root {
+    color-scheme: light dark;
+    --paper: #fbfaf7;
+    --card: #ffffff;
+    --ink: #1a1d21;
+    --muted: #6b6f76;
+    --line: #e3e0d9;
+    --accent: #0f5c4e;
+    --accent-ink: #ffffff;
+    --accent-wash: #e8f1ee;
+    --warn-bg: #fdf6e3;
+    --warn-line: #d9c187;
+    --warn-ink: #6d4c00;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #16181a;
+      --card: #1f2225;
+      --ink: #ecedee;
+      --muted: #9ba0a6;
+      --line: #33383c;
+      --accent: #4fd1b0;
+      --accent-ink: #0b1f1a;
+      --accent-wash: #17322c;
+      --warn-bg: #2b2410;
+      --warn-line: #6f5a22;
+      --warn-ink: #f0d489;
+    }
+  }
+
+  :root[data-theme='light'] {
+    --paper: #fbfaf7; --card: #fff; --ink: #1a1d21; --muted: #6b6f76; --line: #e3e0d9;
+    --accent: #0f5c4e; --accent-ink: #fff; --accent-wash: #e8f1ee;
+    --warn-bg: #fdf6e3; --warn-line: #d9c187; --warn-ink: #6d4c00;
+  }
+  :root[data-theme='dark'] {
+    --paper: #16181a; --card: #1f2225; --ink: #ecedee; --muted: #9ba0a6; --line: #33383c;
+    --accent: #4fd1b0; --accent-ink: #0b1f1a; --accent-wash: #17322c;
+    --warn-bg: #2b2410; --warn-line: #6f5a22; --warn-ink: #f0d489;
+  }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 16px/1.55 ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .masthead { display: flex; flex-direction: column; gap: .35rem; }
+  .eyebrow {
+    margin: 0; font-size: .7rem; font-weight: 600;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--accent);
+  }
+  .masthead h1 {
+    margin: 0; font-size: 1.75rem; font-weight: 700;
+    letter-spacing: -0.022em; text-wrap: balance;
+  }
+  .lede { margin: 0; color: var(--muted); max-width: 34rem; }
+
+  .dropzone {
+    display: grid; place-items: center; gap: .2rem;
+    padding: 2.75rem 1.5rem;
+    background: var(--card);
+    border: 2px dashed var(--line);
+    border-radius: 14px;
+    cursor: pointer; text-align: center;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .dropzone:hover, .dropzone:focus-visible { border-color: var(--accent); outline: none; }
+  .dropzone.over { border-color: var(--accent); background: var(--accent-wash); }
+  .dropzone-icon { width: 30px; height: 30px; color: var(--muted); margin-bottom: .6rem; }
+  .dropzone-title { margin: 0; font-weight: 600; }
+  .dropzone-hint { margin: 0; color: var(--muted); font-size: .9rem; }
+
+  .progress { display: flex; flex-direction: column; gap: .5rem; }
+  .progress[hidden] { display: none; }
+  .progress-track { height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
+  .progress-bar { height: 100%; width: 0%; background: var(--accent); transition: width .12s linear; }
+  .progress-text { margin: 0; font-size: .9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .problems:empty { display: none; }
+  .problems {
+    padding: 1rem 1.25rem;
+    background: var(--warn-bg); border: 1px solid var(--warn-line);
+    border-radius: 12px; color: var(--warn-ink);
+  }
+  .problems h2 { margin: 0 0 .5rem; font-size: .95rem; }
+  .problems ul { margin: 0 0 .5rem; padding-left: 1.1rem; }
+  .problems li { margin-bottom: .3rem; font-size: .9rem; }
+  .problem-file { font-weight: 600; }
+  .problem-note { margin: .5rem 0; font-size: .9rem; }
+
+  .toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; flex-wrap: wrap; min-height: 2.5rem;
+  }
+  .summary { margin: 0; color: var(--muted); font-size: .95rem; font-variant-numeric: tabular-nums; }
+  .toolbar-actions { display: flex; align-items: center; gap: .5rem; margin-left: auto; }
+
+  button { font: inherit; border-radius: 9px; cursor: pointer; border: 1px solid transparent; }
+  .primary { background: var(--accent); color: var(--accent-ink); padding: .6rem 1.35rem; font-weight: 600; }
+  .primary:disabled { opacity: .4; cursor: not-allowed; }
+  .ghost { background: transparent; color: var(--muted); border-color: var(--line); padding: .6rem 1rem; }
+  .ghost:hover { color: var(--ink); border-color: var(--muted); }
+  button:focus-visible, .toggle:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .toggle {
+    display: inline-flex; align-items: center; gap: .45rem;
+    color: var(--muted); font-size: .9rem; cursor: pointer; user-select: none;
+    padding: .6rem .3rem; border-radius: 9px;
+  }
+  .toggle input { accent-color: var(--accent); cursor: pointer; }
+
+  .empty { color: var(--muted); text-align: center; padding: 1.5rem 0; margin: 0; }
+  body.has-labels .empty { display: none; }
+
+  /* The preview is a literal white page, so what she sees is what prints. */
+  .paper { display: none; }
+  body.has-labels .paper {
+    display: block; background: #fff; color: #000;
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 12mm 10mm;
+    box-shadow: 0 1px 3px rgb(0 0 0 / .09);
+  }
+
+  .sheet { display: grid; grid-template-columns: 1fr; gap: 0 10mm; }
+  @media (min-width: 40rem) { .sheet { grid-template-columns: 1fr 1fr; } }
+
+  .parcel {
+    position: relative;
+    display: flex; flex-direction: column; gap: 1.5mm;
+    padding: 3.5mm 0 4mm;
+    border-bottom: 1px solid #ddd9d1;
+    break-inside: avoid; page-break-inside: avoid;
+  }
+  .parcel-name {
+    margin: 0; font-size: 12pt; font-weight: 700; color: #000;
+    line-height: 1.2; overflow-wrap: anywhere;
+  }
+  .parcel-meta {
+    margin: 0; font-size: 9pt; color: #44484d;
+    font-variant-numeric: tabular-nums; letter-spacing: .01em;
+  }
+  .parcel-barcode { line-height: 0; margin-top: .5mm; }
+  .parcel-barcode svg { display: block; max-width: 100%; }
+  .parcel-tracking {
+    margin: 0;
+    font: 600 8.5pt/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: .09em; color: #44484d; font-variant-numeric: tabular-nums;
+  }
+
+  .parcel-remove {
+    position: absolute; top: 2.5mm; right: 0;
+    width: 24px; height: 24px; line-height: 1;
+    font-size: 17px; background: transparent; color: #b6b2aa; border: 0; border-radius: 6px;
+  }
+  .parcel-remove:hover { color: #b3261e; background: #f6eceb; }
+
+  .footnote { margin-top: .5rem; color: var(--muted); font-size: .85rem; text-align: center; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+
+  @media print {
+    @page { size: A4 portrait; margin: 11mm; }
+    body { background: #fff; color: #000; }
+    .app { max-width: none; margin: 0; padding: 0; gap: 0; }
+    .masthead, .dropzone, .progress, .problems, .toolbar, .empty, .footnote,
+    .parcel-remove { display: none !important; }
+    .paper, body.has-labels .paper {
+      display: block; border: 0; border-radius: 0; padding: 0; box-shadow: none; background: #fff;
+    }
+    .sheet { grid-template-columns: 1fr 1fr; gap: 0 10mm; }
+    .parcel-barcode svg { shape-rendering: crispEdges; }
+  }
+</style>
