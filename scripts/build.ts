@@ -81,6 +81,21 @@ const safeScript = script.replace(/<\/script/gi, '<\\/script');
 
 const html = `${shell}\n<script type="module">\n${safeScript}\n</script>\n`;
 
+/**
+ * The page is one HTML file with no charset declaration, and it has to survive being
+ * opened straight off disk. A stray UTF-8 byte gets decoded as latin-1 there, which once
+ * silently broke a regex containing "ó" so Paq labels stopped being recognised. Keep the
+ * whole output ASCII and write non-ASCII as \\u escapes in the source instead.
+ */
+const nonAscii = [...html].findIndex((c) => c.codePointAt(0)! > 127);
+if (nonAscii >= 0) {
+  const around = html.slice(Math.max(0, nonAscii - 60), nonAscii + 60);
+  throw new Error(
+    `Build output contains a non-ASCII character at index ${nonAscii}. ` +
+      `Escape it as \\uXXXX in the source.\n...${around}...`,
+  );
+}
+
 const outDir = join(root, 'dist');
 await mkdir(outDir, { recursive: true });
 const outFile = join(outDir, 'label-sheet.html');
