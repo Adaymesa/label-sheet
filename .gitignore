@@ -1,0 +1,8 @@
+node_modules/
+dist/
+out/
+.DS_Store
+
+# Real shipping labels are personal data and are never committed.
+# tests/fixtures/*.json are anonymised captures of these layouts.
+tests/fixtures/*.pdf

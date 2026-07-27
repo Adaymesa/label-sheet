@@ -1,0 +1,26 @@
+{
+  "name": "bohemefolk-label-sheet",
+  "version": "1.0.0",
+  "description": "Combine Correos/Sendcloud shipping labels into one scannable A4 sheet",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsx scripts/build.ts",
+    "fixtures": "tsx scripts/makeFixtures.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:run": "vitest run"
+  },
+  "dependencies": {
+    "pdfjs-dist": "^4.10.38"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "esbuild": "^0.24.0",
+    "tsx": "^4.22.4",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
+  }
+}
