@@ -1,0 +1,391 @@
+{
+  "width": 411,
+  "height": 283,
+  "items": [
+    {
+      "text": "Devolver al remitente / Return to sender",
+      "x": 246,
+      "y": 159,
+      "width": 152.09,
+      "height": 8
+    },
+    {
+      "text": "Abandonar / Treat as abandoned",
+      "x": 246,
+      "y": 169,
+      "width": 124.39,
+      "height": 8
+    },
+    {
+      "text": "EN CASO DE NO ENTREGA / IN CASE OF NON DELIVERY",
+      "x": 235,
+      "y": 151.1,
+      "width": 164.17,
+      "height": 6
+    },
+    {
+      "text": "FROM",
+      "x": 138.3,
+      "y": 43.2,
+      "width": 29.43,
+      "height": 10
+    },
+    {
+      "text": "TO",
+      "x": 131,
+      "y": 107.2,
+      "width": 13.96,
+      "height": 10
+    },
+    {
+      "text": "Designated operator",
+      "x": 2,
+      "y": 28.1,
+      "width": 58.67,
+      "height": 6
+    },
+    {
+      "text": "Correos",
+      "x": 72,
+      "y": 35.1,
+      "width": 23.02,
+      "height": 6
+    },
+    {
+      "text": "CUSTOMS",
+      "x": 2,
+      "y": 1.1,
+      "width": 30.08,
+      "height": 6
+    },
+    {
+      "text": "DECLARATION",
+      "x": 2,
+      "y": 8.1,
+      "width": 43.43,
+      "height": 6
+    },
+    {
+      "text": "May be opened officially",
+      "x": 5,
+      "y": 18.1,
+      "width": 69.55,
+      "height": 6
+    },
+    {
+      "text": "CN22",
+      "x": 80,
+      "y": 2,
+      "width": 30.65,
+      "height": 12
+    },
+    {
+      "text": "Quantity and detailed",
+      "x": 2,
+      "y": 83.1,
+      "width": 61.09,
+      "height": 6
+    },
+    {
+      "text": "description of contents",
+      "x": 2,
+      "y": 90.1,
+      "width": 66.65,
+      "height": 6
+    },
+    {
+      "text": "Weight",
+      "x": 82.5,
+      "y": 84.1,
+      "width": 19.98,
+      "height": 6
+    },
+    {
+      "text": "(in kg)",
+      "x": 83.5,
+      "y": 91.1,
+      "width": 18.07,
+      "height": 6
+    },
+    {
+      "text": "Value",
+      "x": 108,
+      "y": 84.1,
+      "width": 15.92,
+      "height": 6
+    },
+    {
+      "text": "(in €)",
+      "x": 108.8,
+      "y": 91.1,
+      "width": 14.38,
+      "height": 6
+    },
+    {
+      "text": "Total",
+      "x": 85.8,
+      "y": 171.1,
+      "width": 14.64,
+      "height": 6
+    },
+    {
+      "text": "weight",
+      "x": 83.5,
+      "y": 178.1,
+      "width": 18.98,
+      "height": 6
+    },
+    {
+      "text": "Total",
+      "x": 108.8,
+      "y": 171.1,
+      "width": 14.54,
+      "height": 6
+    },
+    {
+      "text": "Value",
+      "x": 108,
+      "y": 178.1,
+      "width": 15.92,
+      "height": 6
+    },
+    {
+      "text": "For commercial items only if",
+      "x": 2,
+      "y": 169.1,
+      "width": 68.26,
+      "height": 5
+    },
+    {
+      "text": "known HS tariff number",
+      "x": 2,
+      "y": 174.9,
+      "width": 56.96,
+      "height": 5
+    },
+    {
+      "text": "And country of origin of goods",
+      "x": 2,
+      "y": 180.6,
+      "width": 74.26,
+      "height": 5
+    },
+    {
+      "text": "I, the undersigned, whose name and",
+      "x": 1.31,
+      "y": 229.86,
+      "width": 103.36,
+      "height": 6
+    },
+    {
+      "text": "address are given on the item, certify that",
+      "x": 1.31,
+      "y": 236.84,
+      "width": 118.7,
+      "height": 6
+    },
+    {
+      "text": "the particulars given in this declaration",
+      "x": 1.31,
+      "y": 243.83,
+      "width": 111.7,
+      "height": 6
+    },
+    {
+      "text": "are correct and that this item does not",
+      "x": 1.31,
+      "y": 250.81,
+      "width": 109.03,
+      "height": 6
+    },
+    {
+      "text": "contain any dangerous article or articles",
+      "x": 1.31,
+      "y": 257.79,
+      "width": 115.37,
+      "height": 6
+    },
+    {
+      "text": "prohibited by legislation or customs",
+      "x": 1.31,
+      "y": 264.77,
+      "width": 103.36,
+      "height": 6
+    },
+    {
+      "text": "regulations.",
+      "x": 1.31,
+      "y": 271.76,
+      "width": 34.01,
+      "height": 6
+    },
+    {
+      "text": "Tipo de envío /",
+      "x": 2.62,
+      "y": 46.84,
+      "width": 42.01,
+      "height": 6
+    },
+    {
+      "text": "Category of item",
+      "x": 46.29,
+      "y": 46.84,
+      "width": 47.34,
+      "height": 6
+    },
+    {
+      "text": "VENTA DE MERCANCÍA",
+      "x": 5.87,
+      "y": 57.02,
+      "width": 67.67,
+      "height": 6
+    },
+    {
+      "text": "SALE OF MERCHANDISE",
+      "x": 5.88,
+      "y": 67.46,
+      "width": 71.35,
+      "height": 6
+    },
+    {
+      "text": "LX541828625ES",
+      "x": 234.43,
+      "y": 265.14,
+      "width": 68.05,
+      "height": 9
+    },
+    {
+      "text": "UNITED KINGDOM (GB)",
+      "x": 151,
+      "y": 133.45,
+      "width": 89.34,
+      "height": 8
+    },
+    {
+      "text": "63090000 ES",
+      "x": 3.87,
+      "y": 188.42,
+      "width": 36.36,
+      "height": 6
+    },
+    {
+      "text": "0,47",
+      "x": 86.66,
+      "y": 201.31,
+      "width": 11.68,
+      "height": 6
+    },
+    {
+      "text": "49,99",
+      "x": 108.41,
+      "y": 201.31,
+      "width": 15.01,
+      "height": 6
+    },
+    {
+      "text": "PRIYA RAGHAVAN",
+      "x": 151,
+      "y": 85.45,
+      "width": 56.45,
+      "height": 8
+    },
+    {
+      "text": "FLAT 1102 47 PORTLAND STREET",
+      "x": 151,
+      "y": 110.19,
+      "width": 152.94,
+      "height": 8
+    },
+    {
+      "text": "M4 4LN MANCHESTER",
+      "x": 151,
+      "y": 121.45,
+      "width": 86.23,
+      "height": 8
+    },
+    {
+      "text": "CALLE OLIVAR 24",
+      "x": 142,
+      "y": 24.45,
+      "width": 59.14,
+      "height": 8
+    },
+    {
+      "text": "35110 VECINDARIO LAS",
+      "x": 142,
+      "y": 35.45,
+      "width": 93.82,
+      "height": 8
+    },
+    {
+      "text": "PALMAS",
+      "x": 142,
+      "y": 44.7,
+      "width": 32.46,
+      "height": 8
+    },
+    {
+      "text": "ESPAÑA / SPAIN (ES)",
+      "x": 142,
+      "y": 47.45,
+      "width": 81.36,
+      "height": 8
+    },
+    {
+      "text": "EXAMPLE SHOP",
+      "x": 142,
+      "y": 13.45,
+      "width": 57.79,
+      "height": 8
+    },
+    {
+      "text": "600000000",
+      "x": 142,
+      "y": 58.45,
+      "width": 40.03,
+      "height": 8
+    },
+    {
+      "text": "Cust Ref: 1000000000",
+      "x": 142,
+      "y": 69.45,
+      "width": 80.05,
+      "height": 8
+    },
+    {
+      "text": "0,50 Kg",
+      "x": 147.77,
+      "y": 168.79,
+      "width": 17.23,
+      "height": 5
+    },
+    {
+      "text": "1 secondhand used wrap",
+      "x": 2.42,
+      "y": 99.19,
+      "width": 67.04,
+      "height": 6
+    },
+    {
+      "text": "vest with blouse",
+      "x": 2.42,
+      "y": 106.13,
+      "width": 42.68,
+      "height": 6
+    },
+    {
+      "text": "0,47",
+      "x": 87.08,
+      "y": 101.2,
+      "width": 11.68,
+      "height": 6
+    },
+    {
+      "text": "49,99",
+      "x": 108.95,
+      "y": 101.21,
+      "width": 15.01,
+      "height": 6
+    }
+  ]
+}
