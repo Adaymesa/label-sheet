@@ -1,115 +1,113 @@
-# Label sheet
+# Correos label sheet
 
-Turns a pile of downloaded shipping labels into **one A4 page of barcodes** to hand over at
-the post office counter, instead of opening and printing each label PDF one at a time.
+Drag your **Correos** shipping labels onto a page, get **one A4 sheet with every barcode on
+it**, and hand that over at the counter — instead of opening and printing each label PDF one
+at a time.
 
-It is a **single self-contained HTML file**. Open it, drag the label PDFs onto it, press
-Print. No install, no terminal, no account, no network — the PDFs are read in the browser and
-never uploaded anywhere.
+![The app with six parcels loaded, showing the printable sheet preview](docs/screenshot.jpg)
+
+It is a single self-contained HTML file. Open it, drop the PDFs on, press **Print**. Nothing
+to install, no terminal, no account, no sign-up. The PDFs are read inside your browser and
+never leave your computer.
+
+> Built for **Correos (Spain)** labels specifically — Correos Exprés, CN22 customs, Paq
+> Estándar, and the Correos labels produced by Sendcloud. It is not a general-purpose
+> shipping-label tool and will not understand labels from other carriers.
+
+## Using it
+
+1. Download your labels as usual — they land in your Downloads folder.
+2. Open `label-sheet.html`.
+3. Drag the PDFs onto the page (or click to pick them).
+4. Check the list, then press **Print**.
+
+Each row shows who the parcel is for, where it is going and what it weighs, with the barcode
+underneath. Two columns, about 16 parcels per A4 page, so 25 labels come out as 2 pages
+rather than 25.
+
+Anything it cannot read confidently is listed separately with the reason, so you know to
+print that one the old way. It will never put a barcode on the sheet it could not verify.
+
+**Tracking numbers** are hidden by default; there is a toggle in the toolbar. Turn them on if
+the counter's scanner is having a bad day — the printed number is the only fallback.
+
+## Building it
 
 ```bash
 npm install
-npm run build      # -> dist/label-sheet.html
-npm test           # 46 tests
+npm run build       # -> dist/label-sheet.html
+npm test            # 53 tests
 npm run typecheck
 ```
 
-## What it prints
+## Which labels work
 
-Two columns, about 16 parcels per A4 page. Each row is the recipient's name, the destination
-and weight, and a Code 128 barcode. Tracking numbers are hidden by default and can be turned
-on from the toolbar — they are the only fallback if a scan fails at the counter.
-
-Every barcode's SVG carries its own 10-module (5 mm) quiet zone, so two side-by-side symbols
-keep 10 mm of clear space between them, as Code 128 requires. Bars are 0.5 mm per module and
-16 mm tall — slightly larger than Correos itself prints (0.45 mm).
-
-## Are the barcodes the same ones?
-
-The barcodes are **regenerated**, not copied out of the PDF, so this question deserves a real
-answer.
-
-A Correos label encodes the bare S10 tracking number (`LX554474175ES`) as Code 128. That was
-established by decoding the bar geometry directly out of a label PDF and checking the symbol
-checksum, and `src/code128.test.ts` pins the encoder's output to those exact bar widths.
-
-It was then checked the other way round, against the printed pixels: render each label at
-600 dpi, read the bar widths off a scanline, decode them, and compare with what this project
-generates for the same parcel. Across **106 real labels: 106/106 payloads matched, 0
-mismatches.**
-
-Of those, 55 were bar-for-bar identical and 51 were a *different but equivalent* encoding.
-That is expected — Code 128 allows several encodings of the same string, and Correos' own
-producers disagree with each other: the Exprés layout compresses digits with Code C, the CN22
-layout does not. No single encoder can match both bar patterns. What is invariant, and what
-was verified, is the decoded payload.
-
-Two bugs were found this way and fixed:
-
-- symbol value 99 is the "switch to Code C" instruction in code sets A and B, but the literal
-  digits `99` inside Code C — so any tracking number containing `99` was misread
-- labels drawn sideways on the page were read with their axes swapped, which put the sender's
-  details on the sheet instead of the recipient's
-
-## Supported label layouts
-
-Four layouts appear in practice, differing in page rotation, structure and producer:
-
-| Source | Shape | Tracking number |
+| Label | Where it comes from | Barcode contains |
 | --- | --- | --- |
-| Correos Exprés | landscape, `/Rotate 90` | in the file name *and* the page |
-| Correos CN22 customs | landscape, customs table on the left | in the file name *and* the page |
-| Sendcloud | portrait, upright text | page only — the file is `labels (52).pdf` |
-| Sendcloud, rotated | portrait page, text drawn sideways | page only |
+| Correos Exprés | Mi Oficina | S10 tracking number (`LX554474175ES`) |
+| Correos CN22 customs | Mi Oficina, international | S10 tracking number |
+| Paq Estándar | Correos premium | parcel code (`Código de Bulto`) |
+| Sendcloud | Sendcloud, upright or sideways | S10 tracking number |
 
-Rather than hard-coding coordinates per layout, `extractLabel.ts` keys off structure that
-holds in all of them: the `TO` marker sits beside the recipient block, the block is a
-left-aligned column (name first, country last), and phone numbers and delivery boilerplate
-live in *other* columns — so clustering on the left edge separates them out.
+Recipient names in any script are handled, including Japanese and Chinese.
 
-Across a folder of 149 real labels, 144 are read cleanly and 5 are correctly refused.
+Across a folder of 149 real labels, 148 are read correctly and 1 is correctly refused (an
+address sheet with no barcode on it at all).
 
-## What it refuses to do
+## Are the regenerated barcodes really the same?
 
-Labels that are not Correos S10 — a Sendcloud label from another carrier, say — are
-**reported to the user, never guessed at**. A barcode that cannot be verified is not emitted:
-a wrong barcode at the counter is worse than a missing one. The same applies when a file name
-disagrees with the tracking number printed on the page.
+The barcodes are drawn fresh rather than copied out of the PDF, so this is worth being sure
+about. It was checked against the printed pixels: render each label at 600 dpi, read the bar
+widths off a scanline, decode them, and compare with what this project produces for the same
+parcel. **110 real labels, 110 payloads matched, 0 mismatches.**
 
-## Structure
+Some come out bar-for-bar identical and some as a different-but-equivalent encoding, because
+Code 128 allows several encodings of one string and Correos' own label generators disagree
+with each other. The decoded value — the thing a scanner reads — is always the same.
 
-Pure domain in `src/`, IO only at the edges:
+## How it works
+
+`extractLabel` does not hard-code coordinates per layout. It keys off structure that holds
+across all of them: a `TO` / `Destinatario` marker sits beside the recipient block, the block
+is a left-aligned column with the name first and the country last, and phone numbers and
+delivery boilerplate live in other columns — so grouping by left edge separates them out.
+
+Pure domain logic in `src/`, IO only at the edges:
 
 | File | Role |
 | --- | --- |
-| `code128.ts` | Code 128 encoder (+ a decoder used only by tests) |
-| `barcodeSvg.ts` | symbol -> SVG sized in millimetres |
-| `extractLabel.ts` | positioned text -> `Label`, or a reported failure |
+| `code128.ts` | Code 128 encoder (and a decoder used only by tests) |
+| `barcodeSvg.ts` | symbol → SVG, sized in millimetres |
+| `extractLabel.ts` | positioned text → a label, or a reported failure |
 | `types.ts` | domain types |
-| `pdfText.ts` | **adapter** — the only module that knows pdf.js exists |
-| `browser/main.ts` | composition root: drag-and-drop, rendering, print |
+| `pdfText.ts` | adapter — the only file that knows pdf.js exists |
+| `browser/main.ts` | wiring: drag-and-drop, rendering, print |
 
-`extractLabel` is tested against JSON snapshots of positioned text rather than against
-pdf.js, so the tests are fast and deterministic.
-
-### A note on the fixtures
-
-The fixtures in `tests/fixtures/` are captures of genuine shipments with **the names,
-addresses and phone numbers replaced by invented ones**. Every coordinate, width and height
-is exactly as captured, so they still exercise the real geometry of each layout. The source
-PDFs are personal data and are not committed.
-
-`npm run fixtures` regenerates them from PDFs placed in that folder.
+Barcodes are 0.5 mm per module and 16 mm tall, each carrying its own 5 mm quiet zone, so
+side-by-side symbols keep 10 mm of clear space as Code 128 requires.
 
 ## Development
 
 ```bash
-npm test                              # unit tests
-npm run typecheck
-npm run build                         # single-file bundle
-npx tsx scripts/checkCorpus.ts ~/Downloads   # smoke check against a real folder of labels
+npm test
+npm run test:watch
+npx tsx scripts/checkCorpus.ts ~/Downloads   # run the real pipeline over a folder of labels
 ```
 
-`checkCorpus` is a smoke check, not a test: it runs the real pipeline over a directory and
-flags anything that looks mis-read — a name that is really a street line, a missing country,
-a label it could not parse at all.
+`checkCorpus` is a smoke check rather than a test: it runs everything over a real directory
+and flags whatever looks mis-read — a name that is really a street line, a missing country, a
+label it could not parse.
+
+### Fixtures
+
+`tests/fixtures/*.json` are captures of real shipments with **names, addresses and phone
+numbers replaced by invented ones**. Coordinates are untouched, so they still exercise the
+real geometry of each layout. The source PDFs are personal data and are not committed;
+`npm run fixtures` regenerates the JSON from PDFs placed in that folder.
+
+### One gotcha worth knowing
+
+The build refuses to emit any non-ASCII character. The app ships as a single HTML file with
+no charset declaration, so a raw UTF-8 byte gets misread when the file is opened from disk —
+which once silently broke a regex containing `ó` and made Paq labels unrecognisable. Write
+non-ASCII as `\uXXXX` escapes in the source.
