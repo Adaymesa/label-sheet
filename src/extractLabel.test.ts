@@ -114,12 +114,60 @@ describe('extractLabel', () => {
     });
   });
 
+  describe('Paq Estándar layout', () => {
+    // Correos premium. No S10 code at all: the barcode encodes the "Código de Bulto",
+    // verified by decoding the printed bars. The shorter EXPEDICIÓN code on the same
+    // label is a different number and must not be used.
+    it('uses the parcel code the barcode actually carries', () => {
+      const result = extract('paq-estandar-PQ6AA49800574520108410T', 'labels (43).pdf');
+      expect(result.ok && result.label.tracking).toBe('PQ6AA49800574520108410T');
+    });
+
+    it('does not mistake the EXPEDICIÓN number for the barcode', () => {
+      const result = extract('paq-estandar-PQ6AA49800574520108410T', 'labels (43).pdf');
+      expect(result.ok && result.label.tracking).not.toBe('PQ6AA4980057452H');
+    });
+
+    it('reads the recipient beside the Destinatario marker', () => {
+      const result = extract('paq-estandar-PQ6AA49800574520108410T', 'labels (43).pdf');
+      expect(result.ok && result.label.recipient).toBe('Nora Brandt');
+      expect(result.ok && result.label.destination).toBe('BARCELONA');
+    });
+
+    it('reads the weight printed under its heading', () => {
+      const result = extract('paq-estandar-PQ6AA49800574520108410T', 'labels (43).pdf');
+      expect(result.ok && result.label.weight).toBe('0,18 kg');
+    });
+
+    // An older Paq variant: "Código Bulto:" without the "de", the code as a separate item,
+    // the weight in grams, and dotted rules fencing the blocks apart.
+    describe('older variant', () => {
+      const older = () => extract('paq-older-PK6AA40711097670108008H', 'labels (18).pdf');
+
+      it('finds the code even though it is a separate item from its caption', () => {
+        expect(older().ok && (older() as { label: { tracking: string } }).label.tracking).toBe(
+          'PK6AA40711097670108008H',
+        );
+      });
+
+      it('uses the dotted rules to find the recipient, not the street below it', () => {
+        const result = older();
+        expect(result.ok && result.label.recipient).toBe('CAROLINE HAYES');
+        expect(result.ok && result.label.destination).toBe('BARCELONA');
+      });
+
+      it('converts a weight given in grams', () => {
+        expect(older().ok && (older() as { label: { weight: string } }).label.weight).toBe('1,226 kg');
+      });
+    });
+  });
+
   describe('labels we refuse to guess at', () => {
-    it('reports a non-S10 label instead of inventing a barcode', () => {
-      const result = extract('unsupported-nonS10', 'labels (43).pdf');
+    it('reports a label with no barcode instead of inventing one', () => {
+      const result = extract('unsupported-noBarcode', 'labels (45).pdf');
       expect(result.ok).toBe(false);
-      expect(!result.ok && result.reason).toMatch(/No tracking number found/);
-      expect(!result.ok && result.sourceName).toBe('labels (43).pdf');
+      expect(!result.ok && result.reason).toMatch(/No barcode found/);
+      expect(!result.ok && result.sourceName).toBe('labels (45).pdf');
     });
 
     it('reports a file name that disagrees with the printed tracking number', () => {

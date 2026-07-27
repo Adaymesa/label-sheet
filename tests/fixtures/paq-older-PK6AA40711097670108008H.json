@@ -1,0 +1,258 @@
+{
+  "width": 425,
+  "height": 283,
+  "items": [
+    {
+      "text": "Remitente",
+      "x": 22.2,
+      "y": 71,
+      "width": 41.21,
+      "height": 9
+    },
+    {
+      "text": "Destinatario",
+      "x": 22.2,
+      "y": 152,
+      "width": 48.3,
+      "height": 9
+    },
+    {
+      "text": "Observaciones:",
+      "x": 25,
+      "y": 163.7,
+      "width": 48.12,
+      "height": 7
+    },
+    {
+      "text": "Código Bulto:",
+      "x": 25,
+      "y": 188.4,
+      "width": 54.26,
+      "height": 9
+    },
+    {
+      "text": "Bulto:",
+      "x": 352,
+      "y": 192.7,
+      "width": 17.82,
+      "height": 7
+    },
+    {
+      "text": "Peso:",
+      "x": 352,
+      "y": 213.7,
+      "width": 17.82,
+      "height": 7
+    },
+    {
+      "text": "Peso vol.:",
+      "x": 352,
+      "y": 235.7,
+      "width": 30.51,
+      "height": 7
+    },
+    {
+      "text": "Fecha etiquetado:",
+      "x": 352,
+      "y": 257.7,
+      "width": 55.29,
+      "height": 7
+    },
+    {
+      "text": "/",
+      "x": 369.8,
+      "y": 201.4,
+      "width": 2.49,
+      "height": 9
+    },
+    {
+      "text": ".................................................................",
+      "x": 25,
+      "y": 176,
+      "width": 178.99,
+      "height": 10
+    },
+    {
+      "text": "gr",
+      "x": 375,
+      "y": 222.7,
+      "width": 6.13,
+      "height": 7
+    },
+    {
+      "text": "gr",
+      "x": 375,
+      "y": 244.7,
+      "width": 6.13,
+      "height": 7
+    },
+    {
+      "text": "Valores añadidos",
+      "x": 244.2,
+      "y": 123,
+      "width": 74.83,
+      "height": 9
+    },
+    {
+      "text": ".................................................................",
+      "x": 25.1,
+      "y": 83,
+      "width": 178.99,
+      "height": 10
+    },
+    {
+      "text": "SOFIA VANDERMEER",
+      "x": 25,
+      "y": 24.52,
+      "width": 71.57,
+      "height": 7
+    },
+    {
+      "text": "SOFIA VANDERMEER",
+      "x": 25,
+      "y": 33.53,
+      "width": 71.57,
+      "height": 7
+    },
+    {
+      "text": "CALLE OLIVAR 24",
+      "x": 25,
+      "y": 42.54,
+      "width": 70.03,
+      "height": 7
+    },
+    {
+      "text": "35310",
+      "x": 25,
+      "y": 51.55,
+      "width": 19.46,
+      "height": 7
+    },
+    {
+      "text": "SANTA BRIGIDA",
+      "x": 52.68,
+      "y": 51.55,
+      "width": 54.07,
+      "height": 7
+    },
+    {
+      "text": "LAS PALMAS",
+      "x": 25,
+      "y": 60.57,
+      "width": 43.58,
+      "height": 7
+    },
+    {
+      "text": "REF:",
+      "x": 25,
+      "y": 69.17,
+      "width": 15.95,
+      "height": 7
+    },
+    {
+      "text": "#2402",
+      "x": 43.84,
+      "y": 69.58,
+      "width": 19.46,
+      "height": 7
+    },
+    {
+      "text": "CAROLINE HAYES",
+      "x": 25,
+      "y": 91.52,
+      "width": 60.68,
+      "height": 7
+    },
+    {
+      "text": "CARRER DE GRACIA 21 2A",
+      "x": 25,
+      "y": 120.45,
+      "width": 113.82,
+      "height": 8
+    },
+    {
+      "text": "PK6AA40711097670108008H",
+      "x": 86,
+      "y": 188.14,
+      "width": 120.58,
+      "height": 9
+    },
+    {
+      "text": "PK6AA4071109767X",
+      "x": 304,
+      "y": 10.14,
+      "width": 85.06,
+      "height": 9
+    },
+    {
+      "text": "1",
+      "x": 357.05,
+      "y": 202.55,
+      "width": 3.89,
+      "height": 7
+    },
+    {
+      "text": "1",
+      "x": 374,
+      "y": 202.55,
+      "width": 3.89,
+      "height": 7
+    },
+    {
+      "text": "1226",
+      "x": 352,
+      "y": 222.55,
+      "width": 15.57,
+      "height": 7
+    },
+    {
+      "text": "0",
+      "x": 352,
+      "y": 244.55,
+      "width": 3.89,
+      "height": 7
+    },
+    {
+      "text": "05/01/2026",
+      "x": 352,
+      "y": 266.55,
+      "width": 35.03,
+      "height": 7
+    },
+    {
+      "text": "00000000",
+      "x": 399.37,
+      "y": 179,
+      "width": 35.58,
+      "height": 8
+    },
+    {
+      "text": "EXPEDICION:",
+      "x": 237,
+      "y": 10.14,
+      "width": 58.01,
+      "height": 9
+    },
+    {
+      "text": "08008",
+      "x": 25,
+      "y": 138.54,
+      "width": 33.36,
+      "height": 12
+    },
+    {
+      "text": "BARCELONA",
+      "x": 109.33,
+      "y": 138.67,
+      "width": 57.49,
+      "height": 9
+    },
+    {
+      "text": "BARCELONA",
+      "x": 25,
+      "y": 148.66,
+      "width": 57.49,
+      "height": 9
+    }
+  ]
+}

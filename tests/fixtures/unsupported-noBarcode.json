@@ -1,0 +1,41 @@
+{
+  "width": 419.53,
+  "height": 297.64,
+  "items": [
+    {
+      "text": "Sofia Vandermeer, Calle Olivar 24, 35310 Santa brigida, Spain",
+      "x": 12.76,
+      "y": 14.81,
+      "width": 232.58,
+      "height": 8
+    },
+    {
+      "text": "Daniel Whitmore",
+      "x": 175.75,
+      "y": 112.06,
+      "width": 80.57,
+      "height": 10
+    },
+    {
+      "text": "512 Cedar street",
+      "x": 175.75,
+      "y": 124.81,
+      "width": 74.48,
+      "height": 10
+    },
+    {
+      "text": "BRUNSWICK ME 04011",
+      "x": 175.75,
+      "y": 137.57,
+      "width": 112.8,
+      "height": 10
+    },
+    {
+      "text": "United States",
+      "x": 175.75,
+      "y": 150.33,
+      "width": 60.03,
+      "height": 10
+    }
+  ]
+}
