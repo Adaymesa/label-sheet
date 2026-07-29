@@ -31,6 +31,10 @@ print that one the old way. It will never put a barcode on the sheet it could no
 **Tracking numbers** are hidden by default; there is a toggle in the toolbar. Turn them on if
 the counter's scanner is having a bad day — the printed number is the only fallback.
 
+`extras/messages-collector/` is an optional helper for our own workflow — we send labels to
+each other in iMessage, and it pulls the recent ones into a folder to drag on. It is not part
+of the app and you almost certainly do not want it.
+
 ## Building it
 
 ```bash
