@@ -42,4 +42,19 @@ APPLESCRIPT
 cp "$here/collect-from-messages.sh" "$app/Contents/Resources/collect-from-messages.sh"
 chmod +x "$app/Contents/Resources/collect-from-messages.sh"
 
+# osacompile leaves out CFBundleIdentifier entirely, and Full Disk Access is granted
+# against a bundle identifier. Without one there is nothing stable for the permission to
+# attach to, so the grant appears to be set in System Settings but never takes effect.
+/usr/libexec/PlistBuddy -c \
+  "Add :CFBundleIdentifier string com.bohemefolk.collect-labels" \
+  "$app/Contents/Info.plist" >/dev/null
+
+# Editing Info.plist breaks the seal osacompile just made, so re-sign. This has to come
+# last, after every file in the bundle is final.
+codesign --force --sign - "$app" 2>/dev/null
+
 echo "Built: $app"
+echo
+echo "NOTE: this is an ad-hoc signed app, so rebuilding it invalidates any Full Disk"
+echo "Access you already granted. After a rebuild, remove the old entry in"
+echo "System Settings > Privacy & Security > Full Disk Access and add it again."
