@@ -76,6 +76,33 @@ describe('extractLabel', () => {
       expect(result.ok && result.label.recipient).toBe('Min-Seo Han');
     });
 
+    // Sendcloud flattens some weights to one decimal, so a light parcel prints "0,0 Kg"
+    // on the label itself. Repeating that on the sheet reads as missing data rather than
+    // as a light parcel, and the real value is nowhere in the PDF to recover.
+    describe('a weight the label rounded away to zero', () => {
+      const withWeight = (text: string): PdfPageText => {
+        const p = page('sendcloud-EJ520253722ES');
+        const item = p.items.find((i) => /Kg/i.test(i.text));
+        if (!item) throw new Error('fixture no longer has a weight item');
+        return { ...p, items: p.items.map((i) => (i === item ? { ...i, text } : i)) };
+      };
+
+      it('reports the bound instead of a bare zero', () => {
+        const result = extractLabel(withWeight('0,0 Kg'), 'labels (53).pdf');
+        expect(result.ok && result.label.weight).toBe('under 0,1 kg');
+      });
+
+      it('takes the bound from the decimals the label itself shows', () => {
+        const result = extractLabel(withWeight('0,00 Kg'), 'labels (53).pdf');
+        expect(result.ok && result.label.weight).toBe('under 0,01 kg');
+      });
+
+      it('leaves a weight that is merely small alone', () => {
+        const result = extractLabel(withWeight('0,06 Kg'), 'labels (53).pdf');
+        expect(result.ok && result.label.weight).toBe('0,06 kg');
+      });
+    });
+
     // This layout is drawn sideways on a portrait page with /Rotate 0, so pdf.js reports
     // it with the axes swapped. Before pdfText normalised the reading frame, the "column
     // to the right of TO" rule picked up the FROM marker and printed "FROM" as the name.
