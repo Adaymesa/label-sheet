@@ -79,7 +79,22 @@ const shell = await readFile(join(root, 'src', 'browser', 'index.html'), 'utf8')
 // A closing tag inside the bundle would end the script element early.
 const safeScript = script.replace(/<\/script/gi, '<\\/script');
 
-const html = `${shell}\n<script type="module">\n${safeScript}\n</script>\n`;
+/**
+ * The icon is inlined rather than served as /favicon.ico, so the page still works with
+ * no network at all -- from a file:// path, a bookmark, or offline.
+ *
+ * Base64 rather than a plain data: URI keeps favicon.svg readable as an SVG in the
+ * source, and keeps the built file ASCII, which the guard below insists on.
+ */
+const faviconSource = await readFile(join(root, 'src', 'browser', 'favicon.svg'), 'utf8');
+const favicon = faviconSource
+  .replace(/<!--[\s\S]*?-->/g, '') // the comment explains the source, not the icon
+  .replace(/>\s+</g, '><') // only between tags, never inside an attribute
+  .trim();
+const iconLink =
+  `<link rel="icon" href="data:image/svg+xml;base64,${Buffer.from(favicon).toString('base64')}" />`;
+
+const html = `${iconLink}\n${shell}\n<script type="module">\n${safeScript}\n</script>\n`;
 
 /**
  * The page is one HTML file with no charset declaration, and it has to survive being
