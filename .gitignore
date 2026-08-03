@@ -6,3 +6,6 @@ out/
 # Real shipping labels are personal data and are never committed.
 # tests/fixtures/*.json are anonymised captures of these layouts.
 tests/fixtures/*.pdf
+
+# Vercel project link (machine-specific)
+.vercel
