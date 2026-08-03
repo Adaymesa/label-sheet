@@ -6,9 +6,12 @@ at a time.
 
 ![The app with six parcels loaded, showing the printable sheet preview](docs/screenshot.jpg)
 
-It is a single self-contained HTML file. Open it, drop the PDFs on, press **Print**. Nothing
-to install, no terminal, no account, no sign-up. The PDFs are read inside your browser and
-never leave your computer.
+**→ [label-sheet.vercel.app](https://label-sheet.vercel.app)** — or open `dist/label-sheet.html`
+straight off disk; they are the same file.
+
+Drop the PDFs on, press **Print**. Nothing to install, no terminal, no account, no sign-up.
+Hosted or local makes no difference to your data: the page is static, the PDFs are read in
+your browser, and nothing is ever uploaded.
 
 > Built for **Correos (Spain)** labels specifically — Correos Exprés, CN22 customs, Paq
 > Estándar, and the Correos labels produced by Sendcloud. It is not a general-purpose
@@ -17,7 +20,7 @@ never leave your computer.
 ## Using it
 
 1. Download your labels as usual — they land in your Downloads folder.
-2. Open `label-sheet.html`.
+2. Open [label-sheet.vercel.app](https://label-sheet.vercel.app).
 3. Drag the PDFs onto the page (or click to pick them).
 4. Check the list, then press **Print**.
 
