@@ -161,30 +161,34 @@ function findRecipientBlock(page: PdfPageText): PositionedText[] | null {
 }
 
 /** A weight the label itself printed as all zeros: "0,0" means light, not empty. */
-const ROUNDED_TO_ZERO = /^0,(0+)$/;
+const ROUNDED_TO_ZERO = /^0[.,](0+)$/;
 
 /**
- * Correos prints "0,07 Kg" and the CN22 layout prints "0.177 Kg". Normalise to the
- * comma form so a sheet mixing both formats reads consistently.
+ * Everything is reported in grams.
+ *
+ * The labels disagree about units and decimals: Correos Exprés prints "0,07 Kg", CN22
+ * prints "0.177 Kg", an older Paq prints "1226" beside a separate "g". A sheet mixing
+ * those is hard to read down a column, and grams makes every row a whole number in one
+ * unit -- which is also how these parcels get weighed in the first place.
  *
  * A parcel never weighs nothing, so an all-zero value means the label's own precision
- * could not hold it -- Sendcloud flattens some weights to one decimal, and a 40g parcel
+ * could not hold it: Sendcloud flattens some weights to one decimal, and a 40g parcel
  * comes out as "0,0 Kg". The real figure is nowhere in the PDF to recover, and printing
  * the zero verbatim reads as a failed extraction, so state the bound instead. It is
  * taken from the decimals the label shows, which holds whether the generator rounded or
  * truncated.
  */
-function describeWeight(value: string): string {
-  const normalised = value.replace('.', ',');
-  const zeros = ROUNDED_TO_ZERO.exec(normalised);
-  if (!zeros) return `${normalised} kg`;
-  return `under 0,${'0'.repeat(zeros[1]!.length - 1)}1 kg`;
+function describeWeight(value: string, unit: 'kg' | 'g'): string {
+  const perUnit = unit === 'kg' ? 1000 : 1;
+  const zeros = ROUNDED_TO_ZERO.exec(value);
+  if (zeros) return `under ${perUnit / 10 ** zeros[1]!.length} g`;
+  return `${Math.round(Number(value.replace(',', '.')) * perUnit)} g`;
 }
 
 function findWeight(items: readonly PositionedText[]): string | null {
   for (const item of items) {
     const m = WEIGHT.exec(item.text);
-    if (m) return describeWeight(m[1]!);
+    if (m) return describeWeight(m[1]!, 'kg');
   }
 
   // Paq Estándar prints the heading and the value as separate items, stacked. Older
@@ -195,12 +199,8 @@ function findWeight(items: readonly PositionedText[]): string | null {
       .filter((i) => BARE_NUMBER.test(i.text) && i.y > heading.y && Math.abs(i.x - heading.x) <= 6)
       .sort((a, b) => a.y - b.y)[0];
     if (value) {
-      const grams = items.some((i) => /^g(r|rs)?$/i.test(i.text) && Math.abs(i.y - value.y) <= 4);
-      if (grams) {
-        const kg = Number(value.text.replace(',', '.')) / 1000;
-        return describeWeight(kg.toFixed(3).replace(/0+$/, '').replace(/\.$/, ''));
-      }
-      return describeWeight(value.text);
+      const inGrams = items.some((i) => /^g(r|rs)?$/i.test(i.text) && Math.abs(i.y - value.y) <= 4);
+      return describeWeight(value.text, inGrams ? 'g' : 'kg');
     }
   }
   return null;

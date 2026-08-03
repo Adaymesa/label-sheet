@@ -23,7 +23,7 @@ describe('extractLabel', () => {
           tracking: 'LX554474175ES',
           recipient: 'Lorenzo Marchetti',
           destination: 'USA',
-          weight: '0,07 kg',
+          weight: '70 g',
           sourceName: 'LX554474175ES.pdf',
         },
       });
@@ -44,7 +44,7 @@ describe('extractLabel', () => {
           tracking: 'LX554473886ES',
           recipient: 'Katherine Bell',
           destination: 'USA',
-          weight: '0,177 kg',
+          weight: '177 g',
           sourceName: 'LX554473886ES.pdf',
         },
       });
@@ -52,7 +52,7 @@ describe('extractLabel', () => {
 
     it('takes the parcel weight, not the customs line-item weight column', () => {
       const result = extract('LX554473886ES');
-      expect(result.ok && result.label.weight).toBe('0,177 kg');
+      expect(result.ok && result.label.weight).toBe('177 g');
     });
   });
 
@@ -65,7 +65,7 @@ describe('extractLabel', () => {
           tracking: 'EJ520253722ES',
           recipient: 'Min-Seo Han',
           destination: 'CAN',
-          weight: '4,3 kg',
+          weight: '4300 g',
           sourceName: 'labels (52).pdf',
         },
       });
@@ -89,17 +89,17 @@ describe('extractLabel', () => {
 
       it('reports the bound instead of a bare zero', () => {
         const result = extractLabel(withWeight('0,0 Kg'), 'labels (53).pdf');
-        expect(result.ok && result.label.weight).toBe('under 0,1 kg');
+        expect(result.ok && result.label.weight).toBe('under 100 g');
       });
 
       it('takes the bound from the decimals the label itself shows', () => {
         const result = extractLabel(withWeight('0,00 Kg'), 'labels (53).pdf');
-        expect(result.ok && result.label.weight).toBe('under 0,01 kg');
+        expect(result.ok && result.label.weight).toBe('under 10 g');
       });
 
       it('leaves a weight that is merely small alone', () => {
         const result = extractLabel(withWeight('0,06 Kg'), 'labels (53).pdf');
-        expect(result.ok && result.label.weight).toBe('0,06 kg');
+        expect(result.ok && result.label.weight).toBe('60 g');
       });
     });
 
@@ -114,7 +114,7 @@ describe('extractLabel', () => {
           tracking: 'LX541828625ES',
           recipient: 'PRIYA RAGHAVAN',
           destination: 'UNITED KINGDOM (GB)',
-          weight: '0,50 kg',
+          weight: '500 g',
           sourceName: 'labels (14).pdf',
         },
       });
@@ -163,7 +163,7 @@ describe('extractLabel', () => {
 
     it('reads the weight printed under its heading', () => {
       const result = extract('paq-estandar-PQ6AA49800574520108410T', 'labels (43).pdf');
-      expect(result.ok && result.label.weight).toBe('0,18 kg');
+      expect(result.ok && result.label.weight).toBe('180 g');
     });
 
     // An older Paq variant: "Código Bulto:" without the "de", the code as a separate item,
@@ -184,7 +184,7 @@ describe('extractLabel', () => {
       });
 
       it('converts a weight given in grams', () => {
-        expect(older().ok && (older() as { label: { weight: string } }).label.weight).toBe('1,226 kg');
+        expect(older().ok && (older() as { label: { weight: string } }).label.weight).toBe('1226 g');
       });
     });
   });
