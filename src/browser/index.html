@@ -239,10 +239,14 @@
   }
   .parcel-barcode { line-height: 0; margin-top: .5mm; }
   .parcel-barcode svg { display: block; max-width: 100%; }
+  /* Centred under the symbol. Every barcode renders at the full column width -- an S10
+     is 88mm in an 89mm column, and a longer Paq code is scaled down to fit -- so centring
+     on the column is centring under the bars. */
   .parcel-tracking {
     margin: 0;
     font: 600 8.5pt/1 ui-monospace, SFMono-Regular, Menlo, monospace;
     letter-spacing: .09em; color: #44484d; font-variant-numeric: tabular-nums;
+    text-align: center;
   }
 
   .parcel-remove {
