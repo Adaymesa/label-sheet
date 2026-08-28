@@ -223,8 +223,9 @@
   /* The name takes the slack; the badge never shrinks or wraps mid-word. */
   .parcel-who { min-width: 0; overflow-wrap: anywhere; }
 
-  /* Reads on a mono printer: gift is filled, everything else is outlined, so the two
-     are told apart by shape rather than by colour. */
+  /* Reads on a mono printer: told apart by shape, not colour. Merchandise is the filled
+     one because it is the one that needs an invoice at the counter, so it should be the
+     tag that catches the eye. */
   .parcel-tag {
     flex: 0 0 auto;
     font-size: 6.5pt; font-weight: 700; letter-spacing: .07em;
@@ -232,7 +233,7 @@
     padding: .3mm 1.3mm; border: 1px solid #000; border-radius: 1mm;
     color: #000; background: transparent;
   }
-  .parcel-tag[data-category='gift'] { background: #000; color: #fff; }
+  .parcel-tag[data-category='merchandise'] { background: #000; color: #fff; }
   .parcel-meta {
     margin: 0; font-size: 9pt; color: #44484d;
     font-variant-numeric: tabular-nums; letter-spacing: .01em;
