@@ -9,7 +9,7 @@ import cmaps from 'virtual:cmaps';
 import { configurePdf, readPdfText, PdfReadError } from '../pdfText.js';
 import { extractLabel } from '../extractLabel.js';
 import { barcodeSvg } from '../barcodeSvg.js';
-import type { Label } from '../types.js';
+import type { CustomsCategory, Label } from '../types.js';
 
 const base64ToBytes = (b64: string): Uint8Array => {
   const binary = atob(b64);
@@ -137,6 +137,19 @@ async function addFiles(files: readonly File[]): Promise<void> {
   render();
 }
 
+/**
+ * Wording for the customs badge. Short on purpose: it shares a line with the recipient
+ * name in a half-width column, and these mirror the captions printed on the CN22 form.
+ */
+const CATEGORY_TEXT: Readonly<Record<CustomsCategory, string>> = {
+  gift: 'Gift',
+  'commercial-sample': 'Sample',
+  merchandise: 'Merch.',
+  documents: 'Docs',
+  'returned-goods': 'Returned',
+  other: 'Other',
+};
+
 function render(): void {
   sheet.replaceChildren();
 
@@ -146,7 +159,20 @@ function render(): void {
 
     const name = document.createElement('h2');
     name.className = 'parcel-name';
-    name.textContent = label.recipient;
+    const who = document.createElement('span');
+    who.className = 'parcel-who';
+    who.textContent = label.recipient;
+    name.append(who);
+
+    // Only when the label actually carries a customs declaration. No badge is the right
+    // answer for a domestic parcel, and for a category we could not read.
+    if (label.category) {
+      const tag = document.createElement('span');
+      tag.className = 'parcel-tag';
+      tag.dataset['category'] = label.category;
+      tag.textContent = CATEGORY_TEXT[label.category];
+      name.append(tag);
+    }
 
     const meta = document.createElement('p');
     meta.className = 'parcel-meta';

@@ -217,8 +217,22 @@
   }
   .parcel-name {
     margin: 0; font-size: 12pt; font-weight: 700; color: #000;
-    line-height: 1.2; overflow-wrap: anywhere;
+    line-height: 1.2;
+    display: flex; align-items: baseline; gap: 2mm;
   }
+  /* The name takes the slack; the badge never shrinks or wraps mid-word. */
+  .parcel-who { min-width: 0; overflow-wrap: anywhere; }
+
+  /* Reads on a mono printer: gift is filled, everything else is outlined, so the two
+     are told apart by shape rather than by colour. */
+  .parcel-tag {
+    flex: 0 0 auto;
+    font-size: 6.5pt; font-weight: 700; letter-spacing: .07em;
+    text-transform: uppercase; white-space: nowrap;
+    padding: .3mm 1.3mm; border: 1px solid #000; border-radius: 1mm;
+    color: #000; background: transparent;
+  }
+  .parcel-tag[data-category='gift'] { background: #000; color: #fff; }
   .parcel-meta {
     margin: 0; font-size: 9pt; color: #44484d;
     font-variant-numeric: tabular-nums; letter-spacing: .01em;
