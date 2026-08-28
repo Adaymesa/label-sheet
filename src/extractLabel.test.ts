@@ -24,6 +24,7 @@ describe('extractLabel', () => {
           recipient: 'Lorenzo Marchetti',
           destination: 'USA',
           weight: '70 g',
+          category: null,
           sourceName: 'LX554474175ES.pdf',
         },
       });
@@ -45,6 +46,7 @@ describe('extractLabel', () => {
           recipient: 'Katherine Bell',
           destination: 'USA',
           weight: '177 g',
+          category: 'gift',
           sourceName: 'LX554473886ES.pdf',
         },
       });
@@ -66,6 +68,7 @@ describe('extractLabel', () => {
           recipient: 'Min-Seo Han',
           destination: 'CAN',
           weight: '4300 g',
+          category: null,
           sourceName: 'labels (52).pdf',
         },
       });
@@ -115,6 +118,7 @@ describe('extractLabel', () => {
           recipient: 'PRIYA RAGHAVAN',
           destination: 'UNITED KINGDOM (GB)',
           weight: '500 g',
+          category: 'merchandise',
           sourceName: 'labels (14).pdf',
         },
       });
@@ -138,6 +142,90 @@ describe('extractLabel', () => {
     it('reaches the country line below the delivery boilerplate', () => {
       const result = extract('sendcloud-EJ520253722ES', 'labels (52).pdf');
       expect(result.ok && result.label.destination).toBe('CAN');
+    });
+  });
+
+  describe('CN22 customs category', () => {
+    describe('the English tick-box row', () => {
+      // "Gift", "Comm.sample" and "Merch." sit in a row, each with its box about 10pt
+      // to its left, and the tick is a literal "X" text item.
+      const ticked = (x: number): PdfPageText => {
+        const p = page('cn22-checkbox-LX555366937ES');
+        const tick = p.items.find((i) => i.text.trim() === 'X');
+        if (!tick) throw new Error('fixture no longer has a tick');
+        return { ...p, items: p.items.map((i) => (i === tick ? { ...i, x } : i)) };
+      };
+
+      it('reads the ticked box', () => {
+        const result = extract('cn22-checkbox-LX555366937ES', 'LX555366937ES.pdf');
+        expect(result.ok && result.label.category).toBe('merchandise');
+      });
+
+      // Same fixture, tick moved to the Gift box. The file name has to keep matching the
+      // barcode, or the tracking-mismatch guard refuses the label before we get here.
+      it('reads a tick against a different box in the same row', () => {
+        const result = extractLabel(ticked(4), 'LX555366937ES.pdf');
+        expect(result.ok && result.label.category).toBe('gift');
+      });
+
+      it('reads the second row of boxes too', () => {
+        const p = page('cn22-checkbox-LX555366937ES');
+        const docs = p.items.find((i) => i.text.trim() === 'Docs');
+        if (!docs) throw new Error('fixture no longer has a Docs box');
+        const tick = p.items.find((i) => i.text.trim() === 'X');
+        const moved = {
+          ...p,
+          items: p.items.map((i) =>
+            i === tick ? { ...i, x: docs.x - 9, y: docs.y + 1.1 } : i,
+          ),
+        };
+        expect(extractLabel(moved, 'x.pdf').ok && (extractLabel(moved, 'x.pdf') as { label: { category: string } }).label.category).toBe('documents');
+      });
+
+      it('ignores a tick that belongs to no category box', () => {
+        const result = extractLabel(ticked(300), 'x.pdf');
+        expect(result.ok && result.label.category).toBeNull();
+      });
+    });
+
+    describe('the Spanish word variant', () => {
+      // This layout has no tick row. It prints "Category of item:" with the value below,
+      // and its own "X" belongs to the Return-to-sender option further down the page.
+      const withCategory = (text: string): PdfPageText => {
+        const p = page('LX554473886ES');
+        const value = p.items.find((i) => i.text === 'Regalos');
+        if (!value) throw new Error('fixture no longer states a category');
+        return { ...p, items: p.items.map((i) => (i === value ? { ...i, text } : i)) };
+      };
+
+      it('reads the category printed as a word', () => {
+        const result = extract('LX554473886ES');
+        expect(result.ok && result.label.category).toBe('gift');
+      });
+
+      it('is not fooled by the Return-to-sender tick elsewhere on the page', () => {
+        const result = extract('LX554473886ES');
+        expect(result.ok && result.label.category).not.toBe('merchandise');
+      });
+
+      it.each([
+        ['REGALOS', 'gift'],
+        ['Mercancías', 'merchandise'],
+        ['VENTA DE MERCANCÍA', 'merchandise'],
+      ])('reads %s as %s', (word, expected) => {
+        const result = extractLabel(withCategory(word), 'x.pdf');
+        expect(result.ok && result.label.category).toBe(expected);
+      });
+
+      it('refuses a word it does not recognise rather than guessing', () => {
+        const result = extractLabel(withCategory('Algo Raro'), 'x.pdf');
+        expect(result.ok && result.label.category).toBeNull();
+      });
+    });
+
+    it('is null on a label with no customs declaration', () => {
+      const result = extract('sendcloud-EJ520253722ES', 'labels (52).pdf');
+      expect(result.ok && result.label.category).toBeNull();
     });
   });
 

@@ -12,7 +12,13 @@
  * Anything we cannot read confidently is reported, never guessed at — a wrong name on the
  * sheet is worse than a missing one, and a wrong barcode is worse still.
  */
-import type { ExtractionResult, Label, PdfPageText, PositionedText } from './types.js';
+import type {
+  CustomsCategory,
+  ExtractionResult,
+  Label,
+  PdfPageText,
+  PositionedText,
+} from './types.js';
 
 /** UPU S10 tracking number, e.g. LX554474175ES — international Correos services. */
 const S10 = /\b([A-Z]{2}\d{9}[A-Z]{2})\b/;
@@ -185,6 +191,79 @@ function describeWeight(value: string, unit: 'kg' | 'g'): string {
   return `${Math.round(Number(value.replace(',', '.')) * perUnit)} g`;
 }
 
+/** The Spanish variant heads the field with this; some print it without the colon. */
+const CATEGORY_HEADING = /^Category of item:?$/i;
+
+/** How far right of a tick its caption sits. Measured at 9-10pt; the next box is 27 away. */
+const TICK_REACH_PT = 14;
+
+/** How far below its heading the spelled-out value sits. Measured at about 12pt. */
+const CATEGORY_VALUE_REACH_PT = 20;
+
+/** Captions of the CN22 tick-box row, in the CN22 vocabulary. */
+const TICK_BOXES: ReadonlyArray<readonly [string, CustomsCategory]> = [
+  ['Gift', 'gift'],
+  ['Comm.sample', 'commercial-sample'],
+  ['Merch.', 'merchandise'],
+  ['Docs', 'documents'],
+  ['Returned Goods', 'returned-goods'],
+  ['Others', 'other'],
+];
+
+/**
+ * Words the Spanish variant prints, and only those seen on real labels.
+ *
+ * Translating the rest of the CN22 vocabulary on spec would be guessing at wording we
+ * have never observed, and a wrong badge is worse than no badge.
+ */
+const CATEGORY_WORDS: ReadonlyArray<readonly [RegExp, CustomsCategory]> = [
+  [/^regalos?$/i, 'gift'],
+  [/^(venta de\s+)?mercanc[i\u00ed]as?$/i, 'merchandise'],
+];
+
+/**
+ * Reads what the customs declaration says the parcel is.
+ *
+ * Two layouts, and they must not be confused. The English one prints a row of captions
+ * with a literal "X" text item about 10pt to the left of whichever is ticked. The
+ * Spanish one has no tick row at all: it heads the field "Category of item" and prints
+ * the value below it -- and it has its own unrelated "X" further down the page, against
+ * "Devolver al remitente". Matching ticks globally would read that one as a category, so
+ * the tick rule only runs on labels that actually carry the caption row, and anchors on
+ * the caption rather than on any fixed coordinate.
+ */
+function findCustomsCategory(items: readonly PositionedText[]): CustomsCategory | null {
+  const boxes = items.flatMap((item) => {
+    const hit = TICK_BOXES.find(([caption]) => caption === item.text.trim());
+    return hit ? [{ item, category: hit[1] }] : [];
+  });
+
+  if (boxes.length > 0) {
+    for (const tick of items.filter((i) => /^[Xx]$/.test(i.text.trim()))) {
+      const owner = boxes
+        .filter(
+          ({ item }) =>
+            Math.abs(item.y - tick.y) <= 3 &&
+            item.x > tick.x &&
+            item.x - tick.x <= TICK_REACH_PT,
+        )
+        .sort((a, b) => a.item.x - b.item.x)[0];
+      if (owner) return owner.category;
+    }
+    return null;
+  }
+
+  const heading = items.find((i) => CATEGORY_HEADING.test(i.text.trim()));
+  if (!heading) return null;
+
+  const value = items
+    .filter((i) => i.y > heading.y && i.y - heading.y < CATEGORY_VALUE_REACH_PT && i.x < 120)
+    .sort((a, b) => a.y - b.y)[0];
+  if (!value) return null;
+
+  return CATEGORY_WORDS.find(([word]) => word.test(value.text.trim()))?.[1] ?? null;
+}
+
 function findWeight(items: readonly PositionedText[]): string | null {
   for (const item of items) {
     const m = WEIGHT.exec(item.text);
@@ -235,6 +314,7 @@ export function extractLabel(page: PdfPageText, sourceName: string): ExtractionR
     recipient,
     destination: destination === recipient ? '' : destination,
     weight: findWeight(page.items),
+    category: findCustomsCategory(page.items),
     sourceName,
   };
   return { ok: true, label };

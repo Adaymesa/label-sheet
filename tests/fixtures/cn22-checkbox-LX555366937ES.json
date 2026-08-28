@@ -1,0 +1,468 @@
+{
+  "width": 411,
+  "height": 283,
+  "items": [
+    {
+      "text": "LX555366937ES",
+      "x": 237.49,
+      "y": 267.44,
+      "width": 68.02,
+      "height": 9
+    },
+    {
+      "text": "Devolver al remitente / Return to sender",
+      "x": 246,
+      "y": 152.5,
+      "width": 141.74,
+      "height": 8
+    },
+    {
+      "text": "Abandonar / Treat as abandoned",
+      "x": 246,
+      "y": 162.5,
+      "width": 117.34,
+      "height": 8
+    },
+    {
+      "text": "EN CASO DE NO ENTREGA / IN CASE OF NON DELIVERY",
+      "x": 235,
+      "y": 144.63,
+      "width": 163.5,
+      "height": 6
+    },
+    {
+      "text": "FROM",
+      "x": 139.63,
+      "y": 41.21,
+      "width": 29.42,
+      "height": 10
+    },
+    {
+      "text": "TO",
+      "x": 131.07,
+      "y": 101.38,
+      "width": 13.87,
+      "height": 10
+    },
+    {
+      "text": "Others",
+      "x": 100,
+      "y": 58.63,
+      "width": 17.99,
+      "height": 6
+    },
+    {
+      "text": "Comm.sample",
+      "x": 41,
+      "y": 47.63,
+      "width": 38.66,
+      "height": 6
+    },
+    {
+      "text": "Returned Goods",
+      "x": 41,
+      "y": 58.63,
+      "width": 44,
+      "height": 6
+    },
+    {
+      "text": "Gift",
+      "x": 14,
+      "y": 47.63,
+      "width": 9.32,
+      "height": 6
+    },
+    {
+      "text": "Docs",
+      "x": 13,
+      "y": 58.63,
+      "width": 13.67,
+      "height": 6
+    },
+    {
+      "text": "Tick one or more boxes",
+      "x": 72,
+      "y": 67.69,
+      "width": 52.22,
+      "height": 5
+    },
+    {
+      "text": "Designated operator",
+      "x": 2,
+      "y": 27.63,
+      "width": 58.3,
+      "height": 6
+    },
+    {
+      "text": "Correos",
+      "x": 7,
+      "y": 35.63,
+      "width": 21.34,
+      "height": 6
+    },
+    {
+      "text": "CUSTOMS",
+      "x": 2,
+      "y": 0.63,
+      "width": 29.98,
+      "height": 6
+    },
+    {
+      "text": "DECLARATION",
+      "x": 2,
+      "y": 7.53,
+      "width": 43.63,
+      "height": 6
+    },
+    {
+      "text": "May be opened officially",
+      "x": 5,
+      "y": 17.63,
+      "width": 64.33,
+      "height": 6
+    },
+    {
+      "text": "CN22",
+      "x": 80,
+      "y": 1.26,
+      "width": 30.67,
+      "height": 12
+    },
+    {
+      "text": "Quantity and detailed",
+      "x": 2,
+      "y": 76.63,
+      "width": 60.94,
+      "height": 6
+    },
+    {
+      "text": "description of contents",
+      "x": 2,
+      "y": 83.53,
+      "width": 66.27,
+      "height": 6
+    },
+    {
+      "text": "Weight",
+      "x": 82.51,
+      "y": 77.63,
+      "width": 19.97,
+      "height": 6
+    },
+    {
+      "text": "(in kg)",
+      "x": 83.51,
+      "y": 84.53,
+      "width": 17.98,
+      "height": 6
+    },
+    {
+      "text": "Value",
+      "x": 108,
+      "y": 77.63,
+      "width": 15.99,
+      "height": 6
+    },
+    {
+      "text": "(in €)",
+      "x": 108.84,
+      "y": 84.53,
+      "width": 14.32,
+      "height": 6
+    },
+    {
+      "text": "Total",
+      "x": 85.84,
+      "y": 166.63,
+      "width": 14.32,
+      "height": 6
+    },
+    {
+      "text": "weight",
+      "x": 83.51,
+      "y": 173.53,
+      "width": 18.98,
+      "height": 6
+    },
+    {
+      "text": "Total",
+      "x": 108.84,
+      "y": 166.63,
+      "width": 14.32,
+      "height": 6
+    },
+    {
+      "text": "Value",
+      "x": 108,
+      "y": 173.53,
+      "width": 15.99,
+      "height": 6
+    },
+    {
+      "text": "For commercial items only if",
+      "x": 2,
+      "y": 163.69,
+      "width": 67.73,
+      "height": 5
+    },
+    {
+      "text": "known HS tariff number",
+      "x": 2,
+      "y": 169.44,
+      "width": 56.33,
+      "height": 5
+    },
+    {
+      "text": "And country of origin of goods",
+      "x": 2,
+      "y": 175.19,
+      "width": 73.23,
+      "height": 5
+    },
+    {
+      "text": "I, the undersigned, whose name and",
+      "x": 2,
+      "y": 217.63,
+      "width": 103.23,
+      "height": 6
+    },
+    {
+      "text": "address are given on the item, certify that",
+      "x": 2,
+      "y": 224.53,
+      "width": 118.59,
+      "height": 6
+    },
+    {
+      "text": "the particulars given in this declaration",
+      "x": 2,
+      "y": 231.43,
+      "width": 111.57,
+      "height": 6
+    },
+    {
+      "text": "are correct and that this item does not",
+      "x": 2,
+      "y": 238.33,
+      "width": 108.92,
+      "height": 6
+    },
+    {
+      "text": "contain any dangerous article or articles",
+      "x": 2,
+      "y": 245.23,
+      "width": 115.25,
+      "height": 6
+    },
+    {
+      "text": "prohibited by legislation or customs",
+      "x": 2,
+      "y": 252.12,
+      "width": 103.22,
+      "height": 6
+    },
+    {
+      "text": "regulations.",
+      "x": 2,
+      "y": 259.02,
+      "width": 33.97,
+      "height": 6
+    },
+    {
+      "text": "1 used second hand scarf",
+      "x": 2,
+      "y": 93.63,
+      "width": 68.68,
+      "height": 6
+    },
+    {
+      "text": "0",
+      "x": 2,
+      "y": 107.63,
+      "width": 3.34,
+      "height": 6
+    },
+    {
+      "text": "0",
+      "x": 2,
+      "y": 121.63,
+      "width": 3.34,
+      "height": 6
+    },
+    {
+      "text": "0",
+      "x": 2,
+      "y": 135.63,
+      "width": 3.34,
+      "height": 6
+    },
+    {
+      "text": "0",
+      "x": 2,
+      "y": 149.63,
+      "width": 3.34,
+      "height": 6
+    },
+    {
+      "text": "0.04",
+      "x": 86.67,
+      "y": 94.63,
+      "width": 11.67,
+      "height": 6
+    },
+    {
+      "text": "34.91",
+      "x": 108.5,
+      "y": 94.63,
+      "width": 15.01,
+      "height": 6
+    },
+    {
+      "text": "0.0",
+      "x": 111.83,
+      "y": 107.63,
+      "width": 8.33,
+      "height": 6
+    },
+    {
+      "text": "0.0",
+      "x": 111.83,
+      "y": 121.63,
+      "width": 8.33,
+      "height": 6
+    },
+    {
+      "text": "0.0",
+      "x": 111.83,
+      "y": 135.63,
+      "width": 8.33,
+      "height": 6
+    },
+    {
+      "text": "0.0",
+      "x": 111.83,
+      "y": 149.63,
+      "width": 8.33,
+      "height": 6
+    },
+    {
+      "text": "0.04",
+      "x": 87.17,
+      "y": 196.63,
+      "width": 11.67,
+      "height": 6
+    },
+    {
+      "text": "34.91",
+      "x": 108.5,
+      "y": 196.63,
+      "width": 15.01,
+      "height": 6
+    },
+    {
+      "text": "PO Box 4417",
+      "x": 151,
+      "y": 102.5,
+      "width": 47.54,
+      "height": 8
+    },
+    {
+      "text": "1350 Woollahra",
+      "x": 151,
+      "y": 113.5,
+      "width": 56.01,
+      "height": 8
+    },
+    {
+      "text": "AUS",
+      "x": 151,
+      "y": 124.5,
+      "width": 16.43,
+      "height": 8
+    },
+    {
+      "text": "calle olivar 24",
+      "x": 144,
+      "y": 23.5,
+      "width": 58.67,
+      "height": 8
+    },
+    {
+      "text": "35310 TOSCONES (LOS)",
+      "x": 144,
+      "y": 34.5,
+      "width": 92.84,
+      "height": 8
+    },
+    {
+      "text": "ESP",
+      "x": 144,
+      "y": 45.5,
+      "width": 15.98,
+      "height": 8
+    },
+    {
+      "text": "0.04 Kg",
+      "x": 148.17,
+      "y": 162.63,
+      "width": 20.66,
+      "height": 6
+    },
+    {
+      "text": "Mariana Ortega Delgado",
+      "x": 144,
+      "y": 1.5,
+      "width": 91.1,
+      "height": 8
+    },
+    {
+      "text": "Harriet Vance",
+      "x": 151,
+      "y": 77.5,
+      "width": 50.66,
+      "height": 8
+    },
+    {
+      "text": "600000000",
+      "x": 337,
+      "y": 78.5,
+      "width": 40.03,
+      "height": 8
+    },
+    {
+      "text": "X",
+      "x": 91,
+      "y": 48.69,
+      "width": 3.33,
+      "height": 5
+    },
+    {
+      "text": "Merch.",
+      "x": 100,
+      "y": 47.63,
+      "width": 18.33,
+      "height": 6
+    },
+    {
+      "text": "Dangerous goods",
+      "x": 14,
+      "y": 67.63,
+      "width": 47.35,
+      "height": 6
+    },
+    {
+      "text": "63090000 ESP",
+      "x": 3,
+      "y": 182.63,
+      "width": 39.99,
+      "height": 6
+    },
+    {
+      "text": "Cust Ref:",
+      "x": 144,
+      "y": 56.5,
+      "width": 33.31,
+      "height": 8
+    }
+  ]
+}

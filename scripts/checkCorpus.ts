@@ -51,10 +51,10 @@ for (const name of files) {
       failed.push(`${name}: ${result.reason}`);
       continue;
     }
-    const { tracking, recipient, destination, weight } = result.label;
+    const { tracking, recipient, destination, weight, category } = result.label;
     ok++;
     rows.push(
-      `${name.padEnd(24)} ${tracking.padEnd(15)} ${recipient.padEnd(28)} ${(destination || '-').padEnd(6)} ${weight ?? '-'}`,
+      `${name.padEnd(24)} ${tracking.padEnd(15)} ${recipient.padEnd(26)} ${(destination || '-').padEnd(6)} ${(weight ?? '-').padEnd(12)} ${category ?? '-'}`,
     );
     for (const rule of SUSPICIOUS) {
       if (rule.test(recipient)) {

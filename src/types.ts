@@ -15,6 +15,20 @@ export interface PdfPageText {
   readonly items: readonly PositionedText[];
 }
 
+/**
+ * What the CN22 declaration says the parcel is.
+ *
+ * Correos prints this two ways: an English tick-box row, and a Spanish variant that
+ * spells the category out as a word. Both reduce to the same closed CN22 vocabulary.
+ */
+export type CustomsCategory =
+  | 'gift'
+  | 'commercial-sample'
+  | 'merchandise'
+  | 'documents'
+  | 'returned-goods'
+  | 'other';
+
 /** One parcel, as it will appear on the printed sheet. */
 export interface Label {
   /** S10 tracking number, e.g. "LX554474175ES". This is what the barcode encodes. */
@@ -23,6 +37,12 @@ export interface Label {
   readonly destination: string;
   /** As printed on the label, e.g. "0,07 kg". Null when the label does not state one. */
   readonly weight: string | null;
+  /**
+   * The CN22 category, when the label carries a customs declaration. Null for domestic
+   * parcels, and for a category we cannot read confidently: an absent badge is honest,
+   * a guessed one is not.
+   */
+  readonly category: CustomsCategory | null;
   /** File the label came from, for error messages and de-duplication. */
   readonly sourceName: string;
 }
