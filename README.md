@@ -25,14 +25,16 @@ your browser, and nothing is ever uploaded.
 4. Check the list, then press **Print**.
 
 Each row shows who the parcel is for, where it is going and what it weighs, with the barcode
-underneath. Two columns, about 16 parcels per A4 page, so 25 labels come out as 2 pages
+and its tracking number underneath. International parcels also carry a tag saying whether
+the CN22 declares them a **gift** or **merchandise**, so the two are easy to tell apart at
+the counter. Two columns, about 16 parcels per A4 page, so 25 labels come out as 2 pages
 rather than 25.
 
 Anything it cannot read confidently is listed separately with the reason, so you know to
 print that one the old way. It will never put a barcode on the sheet it could not verify.
 
-**Tracking numbers** are hidden by default; there is a toggle in the toolbar. Turn them on if
-the counter's scanner is having a bad day — the printed number is the only fallback.
+**Tracking numbers** are printed under each barcode, because they are the only fallback if
+the counter's scanner is having a bad day. There is a toggle in the toolbar to hide them.
 
 `extras/messages-collector/` is an optional helper for our own workflow — we send labels to
 each other in iMessage, and it pulls the recent ones into a folder to drag on. It is not part
@@ -43,7 +45,7 @@ of the app and you almost certainly do not want it.
 ```bash
 npm install
 npm run build       # -> dist/label-sheet.html
-npm test            # 53 tests
+npm test            # 67 tests
 npm run typecheck
 ```
 
@@ -58,8 +60,9 @@ npm run typecheck
 
 Recipient names in any script are handled, including Japanese and Chinese.
 
-Across a folder of 149 real labels, 148 are read correctly and 1 is correctly refused (an
-address sheet with no barcode on it at all).
+Across a folder of 195 real labels, 194 are read correctly and 1 is correctly refused (an
+address sheet with no barcode on it at all). Of those, 114 carry a CN22 category, split 75
+gift and 39 merchandise.
 
 ## Are the regenerated barcodes really the same?
 
@@ -110,7 +113,11 @@ label it could not parse.
 `tests/fixtures/*.json` are captures of real shipments with **names, addresses and phone
 numbers replaced by invented ones**. Coordinates are untouched, so they still exercise the
 real geometry of each layout. The source PDFs are personal data and are not committed;
-`npm run fixtures` regenerates the JSON from PDFs placed in that folder.
+`npm run fixtures` captures any PDF in that folder that has no JSON yet.
+
+It will not overwrite an existing capture unless you pass `--force`, because the PDFs are
+real and the JSON beside them is not: regenerating in place silently swaps invented names
+back for real customer ones, in a public repository. If you do force it, re-anonymise.
 
 ### One gotcha worth knowing
 
