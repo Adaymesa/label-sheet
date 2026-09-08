@@ -19,12 +19,27 @@
     <input id="picker" type="file" accept="application/pdf,.pdf" multiple hidden />
   </div>
 
+  <div id="folder" class="folder" hidden>
+    <button id="folderPick" class="ghost" type="button">Load from a folder&hellip;</button>
+    <div id="folderKnown" class="folder-known" hidden>
+      <p class="folder-name">Labels in <strong id="folderName"></strong></p>
+      <div class="folder-actions">
+        <button id="folderWeek" class="primary" type="button">This week</button>
+        <button id="folderAll" class="ghost" type="button">Everything</button>
+        <button id="folderChange" class="linkish" type="button">Change folder</button>
+      </div>
+    </div>
+    <p id="folderNote" class="folder-note" role="status" aria-live="polite" hidden></p>
+  </div>
+
   <div id="progress" class="progress" role="status" aria-live="polite" hidden>
     <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
     <p id="progressText" class="progress-text"></p>
   </div>
 
   <div id="problems" class="problems" role="status" aria-live="polite"></div>
+
+  <div id="days" class="days" role="group" aria-label="Days to print" hidden></div>
 
   <div class="toolbar">
     <p id="summary" class="summary" role="status" aria-live="polite"></p>
@@ -99,6 +114,11 @@
     --warn-bg: #2b2410; --warn-line: #6f5a22; --warn-ink: #f0d489;
   }
 
+  /* The `hidden` attribute is only a UA rule, so any author rule that sets `display`
+     silently beats it and the element stays on screen. Half the layout here is flex, so
+     that trap is everywhere -- this makes hiding mean hiding, once, for the whole page. */
+  [hidden] { display: none !important; }
+
   body {
     margin: 0;
     background: var(--paper);
@@ -143,7 +163,6 @@
   .dropzone-hint { margin: 0; color: var(--muted); font-size: .9rem; }
 
   .progress { display: flex; flex-direction: column; gap: .5rem; }
-  .progress[hidden] { display: none; }
   .progress-track { height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
   .progress-bar { height: 100%; width: 0%; background: var(--accent); transition: width .12s linear; }
   .progress-text { margin: 0; font-size: .9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -186,7 +205,6 @@
     background: var(--accent-wash); border: 1px solid var(--accent);
     border-radius: 10px; font-size: .92rem; line-height: 1.5;
   }
-  .print-hint[hidden] { display: none; }
   .print-hint kbd {
     font: 600 .85em ui-monospace, SFMono-Regular, Menlo, monospace;
     background: var(--card); border: 1px solid var(--line);
@@ -250,12 +268,74 @@
     text-align: center;
   }
 
-  .parcel-remove {
-    position: absolute; top: 2.5mm; right: 0;
-    width: 24px; height: 24px; line-height: 1;
-    font-size: 17px; background: transparent; color: #b6b2aa; border: 0; border-radius: 6px;
+  /* The whole parcel is the toggle, so it has to look like something you can press and
+     take focus like one.
+
+     A ring rather than a fill. The barcode carries its own opaque white background -- it
+     has to, so the symbol keeps its quiet zone on paper -- so any card fill breaks around
+     it into two bands. The ring is drawn inside the card (a negative offset) because
+     parcels sit directly against each other down the column with no row gap, and an
+     outset ring would run into the one below. */
+  .parcel {
+    cursor: pointer; border-radius: 2mm;
+    transition: background-color .12s ease;
   }
-  .parcel-remove:hover { color: #b3261e; background: #f6eceb; }
+  .parcel:hover { background: #eef5f2; }
+  .parcel:focus-visible { outline: 2px solid #0f5c4e; outline-offset: -2px; }
+
+  /* The barcode paints its own opaque white background, which punched the highlight into
+     two bands with the symbol sitting in the gap. On screen it steps aside so the card
+     lights up as one rectangle; on paper it is exactly what gives the symbol its quiet
+     zone, so it is put back for printing below. */
+  .parcel-barcode .barcode-bg { fill: transparent; }
+
+  /* Hardcoded, like every other colour inside .paper: the sheet is a literal white page
+     in both themes, so a token that flips to the dark palette would put a white tick on
+     light mint on white. Matches the focus ring above. */
+  .parcel-state {
+    position: absolute; top: 2.5mm; right: 0;
+    width: 20px; height: 20px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 12px; line-height: 1; font-weight: 700;
+    border: 1.5px solid #0f5c4e; background: #0f5c4e; color: #fff;
+  }
+  .parcel.excluded .parcel-state { border-color: #b6b2aa; background: transparent; }
+
+  /* Pointing at the folder once, and then never opening a file dialog again. */
+  .folder { display: flex; flex-direction: column; gap: .6rem; align-items: flex-start; }
+  .folder-known { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; }
+  .folder-name { margin: 0; color: var(--muted); font-size: .9rem; }
+  .folder-name strong { color: var(--ink); font-weight: 600; }
+  .folder-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+  .linkish {
+    border: 0; background: transparent; color: var(--muted);
+    font: inherit; font-size: .85rem; text-decoration: underline; cursor: pointer;
+    padding: .3rem .2rem;
+  }
+  .linkish:hover { color: var(--ink); }
+  .folder-note { margin: 0; color: var(--muted); font-size: .85rem; max-width: 60ch; }
+
+  /* The days on offer, taken from the labels themselves -- an empty day is never a
+     choice here, so a choice is never empty. */
+  .days { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .day {
+    display: inline-flex; align-items: baseline; gap: .45rem;
+    padding: .4rem .8rem; border-radius: 999px;
+    border: 1px solid var(--line); background: transparent; color: var(--ink);
+    font: inherit; font-size: .9rem; font-weight: 600; cursor: pointer;
+  }
+  .day:hover { border-color: var(--accent); }
+  .day[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .day-count { font-weight: 500; font-variant-numeric: tabular-nums; opacity: .75; }
+  .days-note { margin: 0; align-self: center; color: var(--muted); font-size: .85rem; }
+
+  .parcel.excluded { opacity: .35; }
+  .parcel-printed {
+    display: inline-block; margin-left: 2mm;
+    font-size: 7pt; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+    white-space: nowrap; color: #7a5c1f; background: #fbf1d8;
+    padding: .3mm 1.3mm; border-radius: 1mm;
+  }
 
   .footnote { margin-top: .5rem; color: var(--muted); font-size: .85rem; text-align: center; }
 
@@ -268,7 +348,13 @@
     body { background: #fff; color: #000; }
     .app { max-width: none; margin: 0; padding: 0; gap: 0; }
     .masthead, .dropzone, .progress, .problems, .toolbar, .empty, .footnote, .print-hint,
-    .parcel-remove { display: none !important; }
+    .folder, .days, .parcel-state, .parcel-printed { display: none !important; }
+    /* A parcel turned off stays on screen so it can be turned back on; it must never
+       reach paper, and nothing about the control may print either. */
+    .parcel.excluded { display: none !important; }
+    .parcel { cursor: auto; border-radius: 0; outline: 0 !important; background: transparent !important; }
+    /* The quiet zone goes back for paper. */
+    .parcel-barcode .barcode-bg { fill: #fff; }
     .paper, body.has-labels .paper {
       display: block; border: 0; border-radius: 0; padding: 0; box-shadow: none; background: #fff;
     }

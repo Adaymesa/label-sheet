@@ -21,8 +21,60 @@ your browser, and nothing is ever uploaded.
 
 1. Download your labels as usual — they land in your Downloads folder.
 2. Open [label-sheet.vercel.app](https://label-sheet.vercel.app).
-3. Drag the PDFs onto the page (or click to pick them).
-4. Check the list, then press **Print**.
+3. Select the lot and drag them onto the page (or click to pick them). Dropping everything
+   is the point — you do not have to work out which ones you still need.
+4. Pick the days you are posting, click out anything you are not, then press **Print**.
+
+## Loading from a folder
+
+Instead of picking files out of Downloads every time, point the app at the folder once:
+**Load from a folder…**. After that it remembers, and every visit just asks the one
+question that matters — **This week** or **Everything**.
+
+**This week** filters on the folder listing, before a single PDF is opened. A folder of two
+hundred labels opens the ten from this week, which is why it is instant no matter how full
+Downloads gets. **Everything** reads the lot and widens the days on offer to match, so
+nothing is loaded and then hidden.
+
+> **Chrome will not hand over the Downloads folder itself.** It sits on the browser's
+> blocklist beside your home folder, Desktop and Documents. A folder *inside* Downloads is
+> allowed, so make `Downloads/labels` and point Chrome's download location at it — or pick
+> any other folder you like. The app says so plainly if the browser refuses.
+
+Two more things worth knowing. The folder is remembered but permission to read it is not,
+so the browser asks again now and then; choosing **Allow on every visit** stops it asking.
+And this needs the hosted page — the File System Access API does not exist on `file://`, so
+`dist/label-sheet.html` opened off disk shows drag-and-drop only.
+
+Everything else still works exactly as before: drag files on whenever you like, folder or
+no folder.
+
+## Days, parcels, and what has been printed
+
+The app sorts the pile into the days the labels were made on and offers those days as
+buttons — **Today**, **Saturday 5 Sep** — with a count on each. The days come from your
+labels, so a day is never offered empty and never missing. Anything older than a week is
+left out; those labels are still in Downloads, they are just not what today's post office
+run is about.
+
+Today's batch is on when you drop the files, because that is usually the run. Clicking
+another day adds all of it.
+
+Then **click a parcel to leave it out**, and click it again to put it back. The card itself
+is the control — there is no separate tick to hit and no cross to press — so it dims and its
+mark empties, and it stays where it is. Clicking the day off and on resets the whole day.
+
+Nothing on this page destroys anything. Every part of it is the same gesture: click a thing
+to turn it off, click again to turn it on. **Start over** is the only way to clear the sheet.
+
+The button counts what will actually come out — `Print 9 labels` — which is the last thing
+worth reading before you commit paper to it.
+
+A parcel you have printed before is marked **printed today** / **printed Friday 4 Sep**. It
+stays on: a torn sticker or a jam means printing one again is normal, so the mark warns
+you and never decides for you. That record lives in this browser only. If it is ever
+cleared the marks disappear and nothing else changes — the failure costs a hint, never a
+parcel.
 
 Each row shows who the parcel is for, where it is going and what it weighs, with the barcode
 and its tracking number underneath. International parcels also carry a tag saying whether
@@ -45,7 +97,7 @@ of the app and you almost certainly do not want it.
 ```bash
 npm install
 npm run build       # -> dist/label-sheet.html
-npm test            # 67 tests
+npm test            # 126 tests
 npm run typecheck
 ```
 
@@ -89,9 +141,19 @@ Pure domain logic in `src/`, IO only at the edges:
 | `code128.ts` | Code 128 encoder (and a decoder used only by tests) |
 | `barcodeSvg.ts` | symbol → SVG, sized in millimetres |
 | `extractLabel.ts` | positioned text → a label, or a reported failure |
+| `queue.ts` | labels → the days on offer, and which parcels a selection means |
+| `folderLoad.ts` | a folder listing → the files worth opening |
+| `printed.ts` | the print record: marking, reading, and forgetting old entries |
 | `types.ts` | domain types |
 | `pdfText.ts` | adapter — the only file that knows pdf.js exists |
+| `browser/folderAccess.ts` | adapter — the only file that knows the File System Access API |
+| `browser/folderStore.ts` | adapter — the only file that knows the folder is in IndexedDB |
+| `browser/printedStore.ts` | adapter — the only file that knows the record is stored |
 | `browser/main.ts` | wiring: drag-and-drop, rendering, print |
+
+`queue.ts` and `printed.ts` know nothing about each other. That is deliberate: the print
+record annotates a row and never filters one, so losing it cannot change what comes out of
+the printer.
 
 Barcodes are 0.5 mm per module and 16 mm tall, each carrying its own 5 mm quiet zone, so
 side-by-side symbols keep 10 mm of clear space as Code 128 requires.

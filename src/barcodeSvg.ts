@@ -56,7 +56,9 @@ export function barcodeSvg(data: string, options: BarcodeOptions = {}): Barcode 
     `<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeAttr(data)}" ` +
     `width="${widthMm}mm" height="${heightMm}mm" ` +
     `viewBox="0 0 ${totalModules} 10" preserveAspectRatio="none" shape-rendering="crispEdges">` +
-    `<rect x="0" y="0" width="${totalModules}" height="10" fill="#fff" />` +
+    // Classed so the page can let it step aside on screen. It is what gives the symbol
+    // its quiet zone on paper, so the fill stays exactly as it is for printing.
+    `<rect class="barcode-bg" x="0" y="0" width="${totalModules}" height="10" fill="#fff" />` +
     `<g fill="#000">${bars.join('')}</g>` +
     `</svg>`;
 
