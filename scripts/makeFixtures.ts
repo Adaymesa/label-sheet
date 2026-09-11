@@ -10,6 +10,13 @@
  * replaces invented names with real customer ones, in a public repository. So an existing
  * file is left alone unless you say otherwise, and re-anonymising is on you when you do.
  *
+ * The names to put back are deliberately unmistakable: senders are John Doe, recipients
+ * are Jane Doe, and the Japanese fixture uses 山田花子, which is the same idea in Japanese.
+ * Plausible invented names were worse than no anonymisation at all to read -- nobody
+ * looking at "Katherine Bell" could tell whether it was a real customer or not, and twice
+ * it took reading the real PDF to find out. Addresses and phone numbers follow the same
+ * rule: Calle Olivar 24, and the reserved +1 555-01xx range.
+ *
  *   npx tsx scripts/makeFixtures.ts            # only captures PDFs with no JSON yet
  *   npx tsx scripts/makeFixtures.ts --force    # re-captures everything, real names and all
  */

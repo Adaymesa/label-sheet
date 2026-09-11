@@ -21,7 +21,7 @@ describe('extractLabel', () => {
         ok: true,
         label: {
           tracking: 'LX554474175ES',
-          recipient: 'Lorenzo Marchetti',
+          recipient: 'Jane Doe',
           destination: 'USA',
           weight: '70 g',
           category: null,
@@ -32,7 +32,7 @@ describe('extractLabel', () => {
 
     it('does not mistake the sender for the recipient', () => {
       const result = extract('LX554474175ES');
-      expect(result.ok && result.label.recipient).not.toBe('Mariana Ortega');
+      expect(result.ok && result.label.recipient).not.toBe('John Doe');
     });
   });
 
@@ -43,7 +43,7 @@ describe('extractLabel', () => {
         ok: true,
         label: {
           tracking: 'LX554473886ES',
-          recipient: 'Katherine Bell',
+          recipient: 'Jane Doe',
           destination: 'USA',
           weight: '177 g',
           category: 'gift',
@@ -65,7 +65,7 @@ describe('extractLabel', () => {
         ok: true,
         label: {
           tracking: 'EJ520253722ES',
-          recipient: 'Min-Seo Han',
+          recipient: 'Jane-Mary Doe',
           destination: 'CAN',
           weight: '4300 g',
           category: null,
@@ -76,7 +76,7 @@ describe('extractLabel', () => {
 
     it('ignores the phone number printed above the recipient name', () => {
       const result = extract('sendcloud-EJ520253722ES', 'labels (52).pdf');
-      expect(result.ok && result.label.recipient).toBe('Min-Seo Han');
+      expect(result.ok && result.label.recipient).toBe('Jane-Mary Doe');
     });
 
     // Sendcloud flattens some weights to one decimal, so a light parcel prints "0,0 Kg"
@@ -115,7 +115,7 @@ describe('extractLabel', () => {
         ok: true,
         label: {
           tracking: 'LX541828625ES',
-          recipient: 'PRIYA RAGHAVAN',
+          recipient: 'JANE DOE',
           destination: 'UNITED KINGDOM (GB)',
           weight: '500 g',
           category: 'merchandise',
@@ -128,7 +128,7 @@ describe('extractLabel', () => {
     // the CMap tables the glyphs decode to nothing and the street line becomes the name.
     it('reads a Japanese recipient name rather than the street line', () => {
       const result = extract('sendcloud-cjk-LX551890097ES', 'labels (35).pdf');
-      expect(result.ok && result.label.recipient).toBe('和菓子店さくら');
+      expect(result.ok && result.label.recipient).toBe('山田花子');
       expect(result.ok && result.label.destination).toBe('JPN');
     });
 
@@ -245,7 +245,7 @@ describe('extractLabel', () => {
 
     it('reads the recipient beside the Destinatario marker', () => {
       const result = extract('paq-estandar-PQ6AA49800574520108410T', 'labels (43).pdf');
-      expect(result.ok && result.label.recipient).toBe('Nora Brandt');
+      expect(result.ok && result.label.recipient).toBe('Jane Doe');
       expect(result.ok && result.label.destination).toBe('BARCELONA');
     });
 
@@ -267,7 +267,7 @@ describe('extractLabel', () => {
 
       it('uses the dotted rules to find the recipient, not the street below it', () => {
         const result = older();
-        expect(result.ok && result.label.recipient).toBe('CAROLINE HAYES');
+        expect(result.ok && result.label.recipient).toBe('JANE DOE');
         expect(result.ok && result.label.destination).toBe('BARCELONA');
       });
 
