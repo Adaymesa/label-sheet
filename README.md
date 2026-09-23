@@ -104,7 +104,7 @@ of the app and you almost certainly do not want it.
 ```bash
 npm install
 npm run build       # -> dist/label-sheet.html
-npm test            # 126 tests
+npm test            # 146 tests
 npm run typecheck
 ```
 
@@ -148,6 +148,7 @@ Pure domain logic in `src/`, IO only at the edges:
 | `code128.ts` | Code 128 encoder (and a decoder used only by tests) |
 | `barcodeSvg.ts` | symbol → SVG, sized in millimetres |
 | `extractLabel.ts` | positioned text → a label, or a reported failure |
+| `trackingNumber.ts` | validates a hand-typed code, check digit and all |
 | `queue.ts` | labels → the days on offer, and which parcels a selection means |
 | `folderLoad.ts` | a folder listing → the files worth opening |
 | `printed.ts` | the print record: marking, reading, and forgetting old entries |
