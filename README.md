@@ -82,6 +82,13 @@ the CN22 declares them a **gift** or **merchandise**, so the two are easy to tel
 the counter. Two columns, about 16 parcels per A4 page, so 25 labels come out as 2 pages
 rather than 25.
 
+**No PDF?** There is a "add a tracking number by hand" box under the drop zone, for when
+Correos has made the label but will not let you download it. The barcode is regenerated from
+the number either way, so a typed number gives the same symbol the PDF would have. The S10
+check digit is verified before it is accepted, because a single wrong digit would otherwise
+produce a perfectly scannable barcode for somebody else's parcel. Name, destination and
+weight are left blank rather than invented.
+
 Anything it cannot read confidently is listed separately with the reason, so you know to
 print that one the old way. It will never put a barcode on the sheet it could not verify.
 
