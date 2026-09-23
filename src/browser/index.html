@@ -32,6 +32,23 @@
     <p id="folderNote" class="folder-note" role="status" aria-live="polite" hidden></p>
   </div>
 
+  <details id="byHand" class="by-hand">
+    <summary>No PDF? Add a tracking number by hand</summary>
+    <form id="byHandForm" class="by-hand-form">
+      <label class="by-hand-field">
+        <span>Tracking number</span>
+        <input id="byHandCode" type="text" placeholder="LX554474175ES" autocomplete="off"
+               autocapitalize="characters" spellcheck="false" />
+      </label>
+      <label class="by-hand-field">
+        <span>Name <span class="by-hand-optional">optional</span></span>
+        <input id="byHandName" type="text" placeholder="Who it is for" autocomplete="off" />
+      </label>
+      <button type="submit" class="primary">Add</button>
+    </form>
+    <p id="byHandError" class="by-hand-error" role="alert" hidden></p>
+  </details>
+
   <div id="progress" class="progress" role="status" aria-live="polite" hidden>
     <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
     <p id="progressText" class="progress-text"></p>
@@ -161,6 +178,30 @@
   .dropzone-icon { width: 30px; height: 30px; color: var(--muted); margin-bottom: .6rem; }
   .dropzone-title { margin: 0; font-weight: 600; }
   .dropzone-hint { margin: 0; color: var(--muted); font-size: .9rem; }
+
+  .by-hand { border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
+  .by-hand summary {
+    padding: .8rem 1.1rem; cursor: pointer; color: var(--muted); font-size: .92rem;
+    list-style-position: inside;
+  }
+  .by-hand summary:hover { color: var(--ink); }
+  .by-hand[open] summary { border-bottom: 1px solid var(--line); }
+  .by-hand-form {
+    display: flex; flex-wrap: wrap; align-items: flex-end; gap: .75rem; padding: 1rem 1.1rem;
+  }
+  .by-hand-field { display: flex; flex-direction: column; gap: .3rem; flex: 1 1 12rem; }
+  .by-hand-field > span { font-size: .82rem; color: var(--muted); }
+  .by-hand-optional { font-size: .78rem; opacity: .7; }
+  .by-hand-field input {
+    font: inherit; padding: .55rem .7rem; border-radius: 9px;
+    border: 1px solid var(--line); background: var(--paper); color: var(--ink);
+  }
+  .by-hand-field input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  #byHandCode { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .04em; }
+  .by-hand-error {
+    margin: 0; padding: 0 1.1rem 1rem; color: var(--warn-ink); font-size: .9rem;
+  }
+  .by-hand-error[hidden] { display: none; }
 
   .progress { display: flex; flex-direction: column; gap: .5rem; }
   .progress-track { height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }

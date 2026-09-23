@@ -9,6 +9,7 @@ import cmaps from 'virtual:cmaps';
 import { configurePdf, readPdfText, PdfReadError } from '../pdfText.js';
 import { extractLabel } from '../extractLabel.js';
 import { barcodeSvg } from '../barcodeSvg.js';
+import { parseTrackingNumber } from '../trackingNumber.js';
 import {
   ALL_DAYS,
   dayKey,
@@ -119,6 +120,10 @@ const printHint = $<HTMLParagraphElement>('printHint');
 const progress = $<HTMLDivElement>('progress');
 const progressBar = $<HTMLDivElement>('progressBar');
 const progressText = $<HTMLParagraphElement>('progressText');
+const byHandForm = $<HTMLFormElement>('byHandForm');
+const byHandCode = $<HTMLInputElement>('byHandCode');
+const byHandName = $<HTMLInputElement>('byHandName');
+const byHandError = $<HTMLParagraphElement>('byHandError');
 
 /**
  * Two columns of roughly 34mm rows on an A4 page with 11mm margins.
@@ -332,14 +337,17 @@ function render(): void {
     row.tabIndex = 0;
     row.setAttribute('role', 'checkbox');
     row.setAttribute('aria-checked', String(!isExcluded));
-    row.setAttribute('aria-label', `Print ${label.recipient}, ${label.destination}`);
+    // A hand-entered parcel has neither name nor destination, and "Print , " helps nobody.
+    const described =
+      [label.recipient, label.destination].filter(Boolean).join(', ') || label.tracking;
+    row.setAttribute('aria-label', `Print ${described}`);
 
     const name = document.createElement('h2');
     name.className = 'parcel-name';
     const who = document.createElement('span');
     who.className = 'parcel-who';
     who.textContent = label.recipient;
-    name.append(who);
+    if (label.recipient) name.append(who);
 
     // Only when the label actually carries a customs declaration. No badge is the right
     // answer for a domestic parcel, and for a category we could not read.
@@ -350,10 +358,14 @@ function render(): void {
       tag.textContent = CATEGORY_TEXT[label.category];
       name.append(tag);
     }
+    // Nothing to say: no name, no customs badge. Leave the line out rather than empty.
+    name.hidden = name.childElementCount === 0;
 
     const meta = document.createElement('p');
     meta.className = 'parcel-meta';
     meta.textContent = [label.destination, label.weight].filter(Boolean).join('  \u00b7  ');
+    // A hand-entered parcel has neither, and an empty line still takes up space.
+    meta.hidden = meta.textContent === '';
 
     // Says so, does nothing about it. Printing a label twice is sometimes exactly what
     // she wants -- a torn sticker, a jam -- so this warns and never decides.
@@ -489,6 +501,57 @@ window.addEventListener('dragover', (e) => e.preventDefault());
 window.addEventListener('drop', (event) => {
   event.preventDefault();
   void runExclusive(() => addFiles([...(event.dataTransfer?.files ?? [])]));
+});
+
+/**
+ * Add a parcel from a tracking number alone, for when Correos has made the label but
+ * will not hand over the PDF.
+ *
+ * The barcode is regenerated from the number either way, so a typed number produces the
+ * same symbol a PDF would have. What is missing is the PDF's guarantee that the number
+ * is right, which is why parseTrackingNumber checks the S10 check digit before we get
+ * here. Name, destination and weight stay empty rather than invented.
+ */
+byHandForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const parsed = parseTrackingNumber(byHandCode.value);
+  if (!parsed.ok) {
+    byHandError.textContent = parsed.reason;
+    byHandError.hidden = false;
+    byHandCode.focus();
+    return;
+  }
+
+  if (labels.some((l) => l.label.tracking === parsed.tracking)) {
+    byHandError.textContent = `${parsed.tracking} is already on the sheet.`;
+    byHandError.hidden = false;
+    byHandCode.select();
+    return;
+  }
+
+  labels.push({
+    label: {
+      tracking: parsed.tracking,
+      recipient: byHandName.value.trim(),
+      destination: '',
+      weight: null,
+      category: null,
+      sourceName: parsed.tracking,
+    },
+    madeAt: Date.now(),
+  });
+
+  byHandError.hidden = true;
+  byHandCode.value = '';
+  byHandName.value = '';
+  byHandCode.focus();
+  render();
+});
+
+// Clear a stale complaint as soon as the number is being corrected.
+byHandCode.addEventListener('input', () => {
+  byHandError.hidden = true;
 });
 
 showTracking.addEventListener('change', render);
