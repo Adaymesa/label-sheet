@@ -530,6 +530,7 @@ byHandForm.addEventListener('submit', (event) => {
     return;
   }
 
+  const madeAt = Date.now();
   labels.push({
     label: {
       tracking: parsed.tracking,
@@ -539,8 +540,15 @@ byHandForm.addEventListener('submit', (event) => {
       category: null,
       sourceName: parsed.tracking,
     },
-    madeAt: Date.now(),
+    madeAt,
   });
+
+  // Typing a number is an explicit request for that parcel, so it has to appear whatever
+  // was selected beforehand. selectADayIfNoneChosen is not enough: it only fills an empty
+  // selection, so with another day already on, this one would land on a day that is
+  // switched off and the sheet would stay empty.
+  selectedDays.add(dayKey(madeAt));
+  excluded.delete(parsed.tracking);
 
   byHandError.hidden = true;
   byHandCode.value = '';
