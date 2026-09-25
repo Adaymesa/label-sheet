@@ -388,8 +388,13 @@
     @page { size: A4 portrait; margin: 11mm; }
     body { background: #fff; color: #000; }
     .app { max-width: none; margin: 0; padding: 0; gap: 0; }
-    .masthead, .dropzone, .progress, .problems, .toolbar, .empty, .footnote, .print-hint,
-    .folder, .days, .parcel-state, .parcel-printed { display: none !important; }
+    /* The sheet is the only thing that belongs on paper. Listing what to hide means
+       anything added later prints by default, which is how the "add by hand" box ended
+       up on a printout. Hide every direct child, then let the sheet back in. */
+    .app > * { display: none !important; }
+    .app > .paper { display: block !important; }
+    /* These sit inside the sheet, so they are not covered by the rule above. */
+    .parcel-state, .parcel-printed { display: none !important; }
     /* A parcel turned off stays on screen so it can be turned back on; it must never
        reach paper, and nothing about the control may print either. */
     .parcel.excluded { display: none !important; }
