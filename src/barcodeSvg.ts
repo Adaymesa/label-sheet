@@ -27,6 +27,34 @@ const DEFAULT_HEIGHT_MM = 16;
 const escapeAttr = (s: string): string =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+/** One bar, as [left edge, width] in module units from the left of the quiet zone. */
+export type Bar = readonly [number, number];
+
+export interface BarcodeGeometry {
+  readonly bars: readonly Bar[];
+  /** Symbol plus both quiet zones, so a caller can scale the whole thing to fit. */
+  readonly totalModules: number;
+}
+
+/**
+ * Where the bars fall, in module units.
+ *
+ * Shared so the SVG on screen and the PDF on paper are the same symbol rather than two
+ * implementations that agree today. The quiet zone is part of it: it is not decoration,
+ * it is what a scanner needs to find the symbol at all.
+ */
+export function barcodeGeometry(data: string): BarcodeGeometry {
+  const widths = encode(data);
+  const bars: Bar[] = [];
+  let cursor = QUIET_ZONE_MODULES;
+  widths.forEach((width, index) => {
+    if (index % 2 === 0) bars.push([cursor, width]);
+    cursor += width;
+  });
+  const symbolModules = widths.reduce((a, b) => a + b, 0);
+  return { bars, totalModules: symbolModules + QUIET_ZONE_MODULES * 2 };
+}
+
 export interface Barcode {
   readonly svg: string;
   readonly widthMm: number;
@@ -37,19 +65,12 @@ export function barcodeSvg(data: string, options: BarcodeOptions = {}): Barcode 
   const moduleMm = options.moduleMm ?? DEFAULT_MODULE_MM;
   const heightMm = options.heightMm ?? DEFAULT_HEIGHT_MM;
 
-  const widths = encode(data);
-  const symbolModules = widths.reduce((a, b) => a + b, 0);
-  const totalModules = symbolModules + QUIET_ZONE_MODULES * 2;
+  const { bars: geometry, totalModules } = barcodeGeometry(data);
 
   // Draw in module units and let the viewBox scale to mm, so bar edges stay exact.
-  const bars: string[] = [];
-  let cursor = QUIET_ZONE_MODULES;
-  widths.forEach((width, index) => {
-    if (index % 2 === 0) {
-      bars.push(`<rect x="${cursor}" y="0" width="${width}" height="10" />`);
-    }
-    cursor += width;
-  });
+  const bars = geometry.map(
+    ([x, width]) => `<rect x="${x}" y="0" width="${width}" height="10" />`,
+  );
 
   const widthMm = totalModules * moduleMm;
   const svg =
