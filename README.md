@@ -92,6 +92,12 @@ weight are left blank rather than invented.
 Anything it cannot read confidently is listed separately with the reason, so you know to
 print that one the old way. It will never put a barcode on the sheet it could not verify.
 
+**Download PDF** writes the same sheet to a file, for sending to whoever is doing the
+posting. The barcodes are *drawn* into it, not screenshotted, so they stay exact at any
+zoom and on any printer, and the file is a few kilobytes rather than a few megabytes. A
+name no standard PDF font can spell -- Japanese, for instance -- is drawn by the browser
+and placed as a one-bit image, which is cheaper than embedding a font that covers it.
+
 **Tracking numbers** are printed under each barcode, because they are the only fallback if
 the counter's scanner is having a bad day. There is a toggle in the toolbar to hide them.
 
@@ -104,7 +110,7 @@ of the app and you almost certainly do not want it.
 ```bash
 npm install
 npm run build       # -> dist/label-sheet.html
-npm test            # 146 tests
+npm test            # 159 tests
 npm run typecheck
 ```
 
@@ -130,6 +136,9 @@ about. It was checked against the printed pixels: render each label at 600 dpi, 
 widths off a scanline, decode them, and compare with what this project produces for the same
 parcel. **110 real labels, 110 payloads matched, 0 mismatches.**
 
+The downloaded PDF is held to the same standard: render it at 600 dpi, read the bars off a
+scanline and decode them with this project's own decoder. What comes back is what went in.
+
 Some come out bar-for-bar identical and some as a different-but-equivalent encoding, because
 Code 128 allows several encodings of one string and Correos' own label generators disagree
 with each other. The decoded value — the thing a scanner reads — is always the same.
@@ -149,6 +158,7 @@ Pure domain logic in `src/`, IO only at the edges:
 | `barcodeSvg.ts` | symbol → SVG, sized in millimetres |
 | `extractLabel.ts` | positioned text → a label, or a reported failure |
 | `trackingNumber.ts` | validates a hand-typed code, check digit and all |
+| `pdf.ts` | the sheet as a PDF, barcodes drawn as vectors |
 | `queue.ts` | labels → the days on offer, and which parcels a selection means |
 | `folderLoad.ts` | a folder listing → the files worth opening |
 | `printed.ts` | the print record: marking, reading, and forgetting old entries |
