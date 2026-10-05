@@ -10,6 +10,7 @@ import { configurePdf, readPdfText, PdfReadError } from '../pdfText.js';
 import { extractLabel } from '../extractLabel.js';
 import { barcodeSvg } from '../barcodeSvg.js';
 import { parseTrackingNumber } from '../trackingNumber.js';
+import { buildSheetPdf, canEncode, type InkImage, type SheetRow } from '../pdf.js';
 import {
   ALL_DAYS,
   dayKey,
@@ -113,6 +114,7 @@ const problems = $<HTMLDivElement>('problems');
 const empty = $<HTMLParagraphElement>('empty');
 const summary = $<HTMLParagraphElement>('summary');
 const printButton = $<HTMLButtonElement>('print');
+const downloadButton = $<HTMLButtonElement>('download');
 const clearButton = $<HTMLButtonElement>('clear');
 const showTracking = $<HTMLInputElement>('showTracking');
 const showTrackingLabel = $<HTMLLabelElement>('showTrackingLabel');
@@ -454,6 +456,7 @@ function render(): void {
   // The button carries the number, because it is the last thing read before paper is
   // committed. The summary says how many of what is on screen that is.
   printButton.disabled = count === 0;
+  downloadButton.disabled = count === 0;
   printButton.textContent = count === 1 ? 'Print 1 label' : `Print ${count} labels`;
 
   const pages = Math.ceil(count / PARCELS_PER_PAGE);
@@ -578,6 +581,83 @@ const isEmbedded = (): boolean => {
 
 const isMac = /mac/i.test(navigator.platform || navigator.userAgent);
 $<HTMLElement>('printKey').textContent = isMac ? 'Cmd' : 'Ctrl';
+
+/**
+ * Draws a name no standard PDF font can spell, so the PDF can place it as a picture.
+ *
+ * Embedding a font that covers Japanese would add megabytes to a page that has to stay
+ * one downloadable file. Two names in a folder of two hundred need this, so they are
+ * drawn here, where the browser already has the glyphs, and handed over as one bit per
+ * pixel -- black or nothing, which is all a printed name is.
+ */
+function inkImage(text: string, heightMm: number): InkImage {
+  const pxPerMm = 12; // well past any printer, and still only a few kB at this size
+  const emPx = Math.round(heightMm * pxPerMm);
+  const canvas = document.createElement('canvas');
+  const measuring = canvas.getContext('2d');
+  if (!measuring) throw new Error('no 2d canvas context');
+
+  const font = `700 ${emPx}px ui-sans-serif, -apple-system, BlinkMacSystemFont, sans-serif`;
+  measuring.font = font;
+  const widthPx = Math.max(1, Math.ceil(measuring.measureText(text).width));
+  const heightPx = Math.ceil(emPx * 1.3);
+
+  canvas.width = widthPx;
+  canvas.height = heightPx;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('no 2d canvas context');
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, widthPx, heightPx);
+  ctx.fillStyle = '#000';
+  ctx.font = font;
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText(text, 0, emPx);
+
+  const { data } = ctx.getImageData(0, 0, widthPx, heightPx);
+  const rowBytes = Math.ceil(widthPx / 8);
+  const bits = new Uint8Array(rowBytes * heightPx);
+  for (let y = 0; y < heightPx; y++) {
+    for (let x = 0; x < widthPx; x++) {
+      // Anything darker than mid grey becomes ink; there is no grey on this page.
+      if (data[(y * widthPx + x) * 4]! < 128) {
+        bits[y * rowBytes + (x >> 3)]! |= 0x80 >> (x & 7);
+      }
+    }
+  }
+  return { widthPx, heightPx, bits, heightMm: heightPx / pxPerMm };
+}
+
+/** The rows the PDF draws, in the order the sheet shows them. */
+function sheetRows(chosen: readonly DatedLabel[]): SheetRow[] {
+  return chosen.map(({ label }) => ({
+    name: label.recipient === '' || canEncode(label.recipient)
+      ? label.recipient
+      : inkImage(label.recipient, 3.9),
+    meta: [label.destination, label.weight].filter(Boolean).join('  \u00b7  '),
+    tracking: label.tracking,
+    tag: label.category
+      ? { text: CATEGORY_TEXT[label.category], filled: label.category === 'merchandise' }
+      : null,
+  }));
+}
+
+downloadButton.addEventListener('click', () => {
+  const chosen = selectedLabels(
+    groupByDay(labels, Date.now(), windowDays),
+    selectedDays,
+    excluded,
+  );
+  if (chosen.length === 0) return;
+
+  const pdf = buildSheetPdf(sheetRows(chosen));
+  const url = URL.createObjectURL(new Blob([pdf], { type: 'application/pdf' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `label-sheet-${dayKey(Date.now())}.pdf`;
+  link.click();
+  // Let the download start before the blob goes away.
+  setTimeout(() => URL.revokeObjectURL(url), 10_000);
+});
 
 printButton.addEventListener('click', () => {
   if (isEmbedded()) {
