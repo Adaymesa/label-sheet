@@ -133,6 +133,8 @@ const downloadButton = $<HTMLButtonElement>('download');
 const money = $<HTMLDivElement>('money');
 const moneyRevenue = $<HTMLElement>('moneyRevenue');
 const moneyRevenueOf = $<HTMLElement>('moneyRevenueOf');
+const moneyAfterFees = $<HTMLElement>('moneyAfterFees');
+const moneyAfterFeesOf = $<HTMLElement>('moneyAfterFeesOf');
 const moneyShipping = $<HTMLElement>('moneyShipping');
 const moneyShippingOf = $<HTMLElement>('moneyShippingOf');
 const clearButton = $<HTMLButtonElement>('clear');
@@ -508,6 +510,7 @@ function render(): void {
   );
   money.hidden = orderMoney.size === 0 || count === 0;
   moneyRevenue.textContent = formatEur(totals.revenueEurCents);
+  moneyAfterFees.textContent = formatEur(totals.afterFeesEurCents);
   moneyShipping.textContent = formatEur(totals.shippingEurCents);
   // Said out loud whenever a figure is missing for some of them: a partial total that
   // looks complete is worse than no total, and these come from a separate export that
@@ -515,6 +518,7 @@ function render(): void {
   const coverage = (known: number): string =>
     known === totals.parcels ? '' : `from ${known} of ${totals.parcels}`;
   moneyRevenueOf.textContent = coverage(totals.revenueKnown);
+  moneyAfterFeesOf.textContent = coverage(totals.afterFeesKnown);
   moneyShippingOf.textContent = coverage(totals.shippingKnown);
 
   const pages = Math.ceil(count / PARCELS_PER_PAGE);

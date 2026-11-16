@@ -18,16 +18,21 @@ export class OrderExportError extends Error {}
 /** Money an order carries, in euro cents. Null means unknown, which is not zero. */
 export interface OrderMoney {
   readonly revenueEurCents: number | null;
+  /** An estimate of the marketplace's cut, made by whatever exported this. */
+  readonly feesEurCents: number | null;
   readonly shippingEurCents: number | null;
 }
 
 export interface MoneyTotals {
   readonly revenueEurCents: number;
+  /** What is left after the marketplace's cut, over the parcels that state both. */
+  readonly afterFeesEurCents: number;
   readonly shippingEurCents: number;
   /** Parcels asked about, whether or not a figure was found for them. */
   readonly parcels: number;
   /** How many of those had a figure. Less than `parcels` means the total is partial. */
   readonly revenueKnown: number;
+  readonly afterFeesKnown: number;
   readonly shippingKnown: number;
 }
 
@@ -75,6 +80,7 @@ export function parseOrderExport(text: string): ReadonlyMap<string, OrderMoney> 
     if (tracking === '') continue;
     byTracking.set(tracking, {
       revenueEurCents: cents(order['revenueEurCents']),
+      feesEurCents: cents(order['feesEurCents']),
       shippingEurCents: cents(order['shippingEurCents']),
     });
   }
@@ -86,8 +92,10 @@ export function totalsFor(
   orders: ReadonlyMap<string, OrderMoney>,
 ): MoneyTotals {
   let revenueEurCents = 0;
+  let afterFeesEurCents = 0;
   let shippingEurCents = 0;
   let revenueKnown = 0;
+  let afterFeesKnown = 0;
   let shippingKnown = 0;
 
   for (const tracking of trackings) {
@@ -96,6 +104,12 @@ export function totalsFor(
     if (money.revenueEurCents !== null) {
       revenueEurCents += money.revenueEurCents;
       revenueKnown++;
+      // Both or neither. Counting a sale whose fees are unknown at its full value would
+      // read as one the marketplace took nothing from.
+      if (money.feesEurCents !== null) {
+        afterFeesEurCents += money.revenueEurCents - money.feesEurCents;
+        afterFeesKnown++;
+      }
     }
     if (money.shippingEurCents !== null) {
       shippingEurCents += money.shippingEurCents;
@@ -105,9 +119,11 @@ export function totalsFor(
 
   return {
     revenueEurCents,
+    afterFeesEurCents,
     shippingEurCents,
     parcels: trackings.length,
     revenueKnown,
+    afterFeesKnown,
     shippingKnown,
   };
 }

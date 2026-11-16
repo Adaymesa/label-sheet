@@ -85,6 +85,11 @@
       <span id="moneyRevenueOf" class="money-of"></span>
     </div>
     <div class="money-figure">
+      <span class="money-label" title="What is left after the marketplace's fixed fees. An estimate: it leaves out Offsite Ads, which no order record states.">After fees <span class="money-est">est.</span></span>
+      <strong id="moneyAfterFees" class="money-value"></strong>
+      <span id="moneyAfterFeesOf" class="money-of"></span>
+    </div>
+    <div class="money-figure">
       <span class="money-label" title="What Correos charged for these labels">Spent on labels</span>
       <strong id="moneyShipping" class="money-value"></strong>
       <span id="moneyShippingOf" class="money-of"></span>
@@ -283,6 +288,11 @@
   .money-value { font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; }
   .money-of { font-size: .78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
   .money-of:empty { display: none; }
+  /* Said on the figure itself, not in a footnote nobody reads. */
+  .money-est {
+    font-weight: 500; letter-spacing: .04em; text-transform: none;
+    opacity: .75; font-style: italic;
+  }
 
   .print-hint {
     margin: 0; padding: .85rem 1.1rem;

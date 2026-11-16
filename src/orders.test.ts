@@ -12,8 +12,16 @@ describe('parseOrderExport', () => {
         { tracking: 'LX554473886ES', revenueEurCents: 500, shippingEurCents: null },
       ]),
     );
-    expect(map.get('LX554474175ES')).toEqual({ revenueEurCents: 3491, shippingEurCents: 1245 });
-    expect(map.get('LX554473886ES')).toEqual({ revenueEurCents: 500, shippingEurCents: null });
+    expect(map.get('LX554474175ES')).toEqual({
+      revenueEurCents: 3491,
+      feesEurCents: null,
+      shippingEurCents: 1245,
+    });
+    expect(map.get('LX554473886ES')).toEqual({
+      revenueEurCents: 500,
+      feesEurCents: null,
+      shippingEurCents: null,
+    });
   });
 
   it('matches however the tracking number was written', () => {
@@ -58,9 +66,9 @@ describe('parseOrderExport', () => {
 describe('totalsFor', () => {
   const orders = parseOrderExport(
     exported([
-      { tracking: 'AA000000001AA', revenueEurCents: 3491, shippingEurCents: 1245 },
-      { tracking: 'AA000000002AA', revenueEurCents: 1200, shippingEurCents: 1100 },
-      { tracking: 'AA000000003AA', revenueEurCents: 800, shippingEurCents: null },
+      { tracking: 'AA000000001AA', revenueEurCents: 3491, feesEurCents: 365, shippingEurCents: 1245 },
+      { tracking: 'AA000000002AA', revenueEurCents: 1200, feesEurCents: 176, shippingEurCents: 1100 },
+      { tracking: 'AA000000003AA', revenueEurCents: 800, feesEurCents: null, shippingEurCents: null },
     ]),
   );
 
@@ -85,11 +93,32 @@ describe('totalsFor', () => {
     const t = totalsFor(['ZZ999999999ZZ'], orders);
     expect(t).toEqual({
       revenueEurCents: 0,
+      afterFeesEurCents: 0,
       shippingEurCents: 0,
       parcels: 1,
       revenueKnown: 0,
+      afterFeesKnown: 0,
       shippingKnown: 0,
     });
+  });
+
+  it('takes the marketplace cut off what was sold', () => {
+    const t = totalsFor(['AA000000001AA', 'AA000000002AA'], orders);
+    expect(t.revenueEurCents).toBe(4691);
+    expect(t.afterFeesEurCents).toBe(4691 - 365 - 176);
+    expect(t.afterFeesKnown).toBe(2);
+  });
+
+  /**
+   * A parcel with a price but no fee estimate must not land in the after-fees total at
+   * its full value: that would read as a sale the marketplace took nothing from.
+   */
+  it('leaves out a parcel whose fees are unknown rather than counting it whole', () => {
+    const t = totalsFor(['AA000000001AA', 'AA000000003AA'], orders);
+    expect(t.revenueEurCents).toBe(3491 + 800);
+    expect(t.afterFeesEurCents).toBe(3491 - 365);
+    expect(t.afterFeesKnown).toBe(1);
+    expect(t.revenueKnown).toBe(2);
   });
 });
 

@@ -98,10 +98,16 @@ Drop an `orders.json` from the Correos order filler into the labels folder and t
 shows two totals for the parcels that are ticked: what they sold for, and what the labels
 cost.
 
-**Sold for** is what buyers paid for the items, before the marketplace takes anything. Etsy
-publishes fees in its Payment Account, not in the order data the filler reads, so no fee,
-payout or tax figure exists to subtract. It is not take-home, and it excludes buyer-paid
-shipping and VAT for the same reason. On screen only -- neither number belongs on a sheet handed over at a counter.
+**Sold for** is what buyers paid for the items. **After fees** takes off the marketplace's
+fixed cut -- for Etsy, the transaction fee, payment processing and the listing -- and is
+marked *est.* because it is one. Etsy publishes real fees in its Payment Account, not in
+the order data the filler reads, so the figure is modelled rather than read. It leaves out
+Offsite Ads, which is 12-15% when it fires and nothing when it does not, and which no order
+record states. Buyer-paid shipping and VAT are not in it either.
+
+A parcel whose fees cannot be estimated -- a marketplace that is not modelled -- is left
+out of **After fees** entirely rather than counted at its full value, which would read as a
+sale nobody took a cut of. That is what the `from 7 of 9` under each figure is for. On screen only -- neither number belongs on a sheet handed over at a counter.
 
 The declared value printed on a label will not do for this. US parcels are declared as
 gifts at a fixed nominal value, so adding those up undercounts most of what was sold; in a
@@ -131,7 +137,7 @@ of the app and you almost certainly do not want it.
 ```bash
 npm install
 npm run build       # -> dist/label-sheet.html
-npm test            # 178 tests
+npm test            # 180 tests
 npm run typecheck
 ```
 
