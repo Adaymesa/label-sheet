@@ -92,6 +92,22 @@ weight are left blank rather than invented.
 Anything it cannot read confidently is listed separately with the reason, so you know to
 print that one the old way. It will never put a barcode on the sheet it could not verify.
 
+## What the run is worth
+
+Drop an `orders.json` from the Correos order filler into the labels folder and the app
+shows two totals for the parcels that are ticked: what they sold for, and what the labels
+cost. On screen only -- neither number belongs on a sheet handed over at a counter.
+
+The declared value printed on a label will not do for this. US parcels are declared as
+gifts at a fixed nominal value, so adding those up undercounts most of what was sold; in a
+folder of 324 labels the gifts came to a median of 5,00 EUR. The real prices were read off
+the marketplace by the order filler, and the tracking number joins the two.
+
+Each figure says how many parcels it covers -- `from 7 of 9` -- whenever it is missing some.
+A partial total that looks complete is worse than no total, and the export is a separate
+file that can easily be out of date. What a label cost is recorded from the moment the
+order filler started keeping it, so older parcels have no figure and say so.
+
 **Download PDF** writes the same sheet to a file, for sending to whoever is doing the
 posting. The barcodes are *drawn* into it, not screenshotted, so they stay exact at any
 zoom and on any printer, and the file is a few kilobytes rather than a few megabytes. A
@@ -110,7 +126,7 @@ of the app and you almost certainly do not want it.
 ```bash
 npm install
 npm run build       # -> dist/label-sheet.html
-npm test            # 159 tests
+npm test            # 178 tests
 npm run typecheck
 ```
 
@@ -159,6 +175,7 @@ Pure domain logic in `src/`, IO only at the edges:
 | `extractLabel.ts` | positioned text → a label, or a reported failure |
 | `trackingNumber.ts` | validates a hand-typed code, check digit and all |
 | `pdf.ts` | the sheet as a PDF, barcodes drawn as vectors |
+| `orders.ts` | reads the order export and totals what is ticked |
 | `queue.ts` | labels → the days on offer, and which parcels a selection means |
 | `folderLoad.ts` | a folder listing → the files worth opening |
 | `printed.ts` | the print record: marking, reading, and forgetting old entries |
