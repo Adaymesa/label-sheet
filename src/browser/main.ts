@@ -825,6 +825,13 @@ async function loadFromFolder(scope: LoadScope): Promise<void> {
     return;
   }
 
+  // The order filler writes its export beside the labels. Read before anything decides
+  // there is nothing to load: what the parcels were worth does not depend on which of
+  // them are in scope, and the scope can perfectly well be empty while the figures are
+  // not. Absent is the normal case and says nothing; present and unreadable is reported.
+  const exportFile = await readFile(readable.handle, ORDER_EXPORT_NAME);
+  if (exportFile) applyOrderExport(await exportFile.text(), ORDER_EXPORT_NAME);
+
   const unreadable = listed.skipped > 0 ? ` (${listed.skipped} could not be read)` : '';
   const wanted = labelFilesToRead(listed.entries, scope, Date.now(), WINDOW_DAYS);
   if (wanted.length === 0) {
@@ -848,11 +855,6 @@ async function loadFromFolder(scope: LoadScope): Promise<void> {
 
   // A file can be moved or cleaned up between listing the folder and opening it; those
   // come back null and are dropped rather than failing the whole load.
-  // The order filler writes its export beside the labels. Absent is the normal case, so
-  // its absence is silent; a file that is there and unreadable is reported.
-  const exportFile = await readFile(readable.handle, ORDER_EXPORT_NAME);
-  if (exportFile) applyOrderExport(await exportFile.text(), ORDER_EXPORT_NAME);
-
   const opened = await Promise.all(wanted.map((entry) => readFile(readable.handle, entry.name)));
   const files = opened.filter((file): file is File => file !== null);
   const vanished = opened.length - files.length;
