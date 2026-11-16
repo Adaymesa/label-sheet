@@ -12,6 +12,13 @@ import { barcodeSvg } from '../barcodeSvg.js';
 import { parseTrackingNumber } from '../trackingNumber.js';
 import { buildSheetPdf, canEncode, type InkImage, type SheetRow } from '../pdf.js';
 import {
+  formatEur,
+  OrderExportError,
+  parseOrderExport,
+  totalsFor,
+  type OrderMoney,
+} from '../orders.js';
+import {
   ALL_DAYS,
   dayKey,
   formatDay,
@@ -60,6 +67,14 @@ interface Failure {
 }
 
 const labels: DatedLabel[] = [];
+
+/**
+ * What the orders exported from the Correos order filler say each parcel was worth.
+ *
+ * Empty until such a file turns up, and the figures stay off screen until then: an
+ * unexplained zero would be worse than no number at all.
+ */
+let orderMoney: ReadonlyMap<string, OrderMoney> = new Map();
 const failures: Failure[] = [];
 
 /** Days whose labels are on the sheet. Selecting a day takes all of it. */
@@ -115,6 +130,11 @@ const empty = $<HTMLParagraphElement>('empty');
 const summary = $<HTMLParagraphElement>('summary');
 const printButton = $<HTMLButtonElement>('print');
 const downloadButton = $<HTMLButtonElement>('download');
+const money = $<HTMLDivElement>('money');
+const moneyRevenue = $<HTMLElement>('moneyRevenue');
+const moneyRevenueOf = $<HTMLElement>('moneyRevenueOf');
+const moneyShipping = $<HTMLElement>('moneyShipping');
+const moneyShippingOf = $<HTMLElement>('moneyShippingOf');
 const clearButton = $<HTMLButtonElement>('clear');
 const showTracking = $<HTMLInputElement>('showTracking');
 const showTrackingLabel = $<HTMLLabelElement>('showTrackingLabel');
@@ -172,9 +192,31 @@ async function runExclusive(work: () => Promise<void>): Promise<void> {
   }
 }
 
+/** Reads an order export, or reports why it could not be read. */
+function applyOrderExport(text: string, sourceName: string): void {
+  try {
+    orderMoney = parseOrderExport(text);
+  } catch (error) {
+    failures.push({
+      sourceName,
+      reason: error instanceof OrderExportError ? error.message : 'Could not read that file.',
+    });
+  }
+}
+
+const isJson = (name: string): boolean => /\.json$/i.test(name);
+
+/** What the Correos order filler calls the file it exports beside the labels. */
+const ORDER_EXPORT_NAME = 'orders.json';
+
 async function addFiles(files: readonly File[]): Promise<void> {
+  // An order export can be dropped on with the labels rather than sitting in the folder.
+  for (const file of files.filter((f) => isJson(f.name))) {
+    applyOrderExport(await file.text(), file.name);
+  }
+
   const pdfs = files.filter((f) => isPdf(f.name));
-  const rejected = files.filter((f) => !pdfs.includes(f));
+  const rejected = files.filter((f) => !pdfs.includes(f) && !isJson(f.name));
   for (const file of rejected) {
     failures.push({ sourceName: file.name, reason: 'Not a PDF file.' });
   }
@@ -458,6 +500,22 @@ function render(): void {
   printButton.disabled = count === 0;
   downloadButton.disabled = count === 0;
   printButton.textContent = count === 1 ? 'Print 1 label' : `Print ${count} labels`;
+
+  // Only ever about the parcels that are actually going out, so it tracks the ticking.
+  const totals = totalsFor(
+    chosen.map((dated) => dated.label.tracking),
+    orderMoney,
+  );
+  money.hidden = orderMoney.size === 0 || count === 0;
+  moneyRevenue.textContent = formatEur(totals.revenueEurCents);
+  moneyShipping.textContent = formatEur(totals.shippingEurCents);
+  // Said out loud whenever a figure is missing for some of them: a partial total that
+  // looks complete is worse than no total, and these come from a separate export that
+  // can easily be out of date.
+  const coverage = (known: number): string =>
+    known === totals.parcels ? '' : `from ${known} of ${totals.parcels}`;
+  moneyRevenueOf.textContent = coverage(totals.revenueKnown);
+  moneyShippingOf.textContent = coverage(totals.shippingKnown);
 
   const pages = Math.ceil(count / PARCELS_PER_PAGE);
   const parcels =
@@ -790,6 +848,11 @@ async function loadFromFolder(scope: LoadScope): Promise<void> {
 
   // A file can be moved or cleaned up between listing the folder and opening it; those
   // come back null and are dropped rather than failing the whole load.
+  // The order filler writes its export beside the labels. Absent is the normal case, so
+  // its absence is silent; a file that is there and unreadable is reported.
+  const exportFile = await readFile(readable.handle, ORDER_EXPORT_NAME);
+  if (exportFile) applyOrderExport(await exportFile.text(), ORDER_EXPORT_NAME);
+
   const opened = await Promise.all(wanted.map((entry) => readFile(readable.handle, entry.name)));
   const files = opened.filter((file): file is File => file !== null);
   const vanished = opened.length - files.length;

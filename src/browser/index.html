@@ -78,6 +78,19 @@
     </div>
   </div>
 
+  <div id="money" class="money" role="status" aria-live="polite" hidden>
+    <div class="money-figure">
+      <span class="money-label">Revenue</span>
+      <strong id="moneyRevenue" class="money-value"></strong>
+      <span id="moneyRevenueOf" class="money-of"></span>
+    </div>
+    <div class="money-figure">
+      <span class="money-label">Spent on labels</span>
+      <strong id="moneyShipping" class="money-value"></strong>
+      <span id="moneyShippingOf" class="money-of"></span>
+    </div>
+  </div>
+
   <p id="printHint" class="print-hint" role="status" hidden>
     This page is embedded, so the Print button is blocked here. Open it in its own browser
     tab and press <kbd id="printKey">Cmd</kbd>+<kbd>P</kbd>, or save the page and open the file directly.
@@ -253,6 +266,23 @@
     padding: .6rem .3rem; border-radius: 9px;
   }
   .toggle input { accent-color: var(--accent); cursor: pointer; }
+
+  /* Screen only. The print rules hide every direct child of .app except the sheet, so
+     this needs nothing of its own to stay off paper. */
+  .money {
+    display: flex; flex-wrap: wrap; gap: 2.5rem;
+    padding: .9rem 1.2rem;
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  }
+  .money[hidden] { display: none; }
+  .money-figure { display: flex; flex-direction: column; gap: .15rem; }
+  .money-label {
+    font-size: .72rem; font-weight: 600; letter-spacing: .09em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .money-value { font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .money-of { font-size: .78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .money-of:empty { display: none; }
 
   .print-hint {
     margin: 0; padding: .85rem 1.1rem;
