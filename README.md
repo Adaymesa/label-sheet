@@ -96,7 +96,12 @@ print that one the old way. It will never put a barcode on the sheet it could no
 
 Drop an `orders.json` from the Correos order filler into the labels folder and the app
 shows two totals for the parcels that are ticked: what they sold for, and what the labels
-cost. On screen only -- neither number belongs on a sheet handed over at a counter.
+cost.
+
+**Sold for** is what buyers paid for the items, before the marketplace takes anything. Etsy
+publishes fees in its Payment Account, not in the order data the filler reads, so no fee,
+payout or tax figure exists to subtract. It is not take-home, and it excludes buyer-paid
+shipping and VAT for the same reason. On screen only -- neither number belongs on a sheet handed over at a counter.
 
 The declared value printed on a label will not do for this. US parcels are declared as
 gifts at a fixed nominal value, so adding those up undercounts most of what was sold; in a
