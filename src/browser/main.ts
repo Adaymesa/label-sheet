@@ -509,14 +509,24 @@ function render(): void {
     orderMoney,
   );
   money.hidden = orderMoney.size === 0 || count === 0;
-  moneyRevenue.textContent = formatEur(totals.revenueEurCents);
-  moneyAfterFees.textContent = formatEur(totals.afterFeesEurCents);
-  moneyShipping.textContent = formatEur(totals.shippingEurCents);
+
+  // A total of nothing is not zero. "0,00" reads as a figure -- the marketplace took
+  // nothing, the labels were free -- when what is true is that nobody knows yet. The
+  // domain is careful about this; it would be thrown away here by formatting it.
+  const figure = (cents: number, known: number): string =>
+    known === 0 ? '\u2014' : formatEur(cents);
+
   // Said out loud whenever a figure is missing for some of them: a partial total that
   // looks complete is worse than no total, and these come from a separate export that
   // can easily be out of date.
-  const coverage = (known: number): string =>
-    known === totals.parcels ? '' : `from ${known} of ${totals.parcels}`;
+  const coverage = (known: number): string => {
+    if (known === totals.parcels) return '';
+    return known === 0 ? `none of ${totals.parcels} yet` : `from ${known} of ${totals.parcels}`;
+  };
+
+  moneyRevenue.textContent = figure(totals.revenueEurCents, totals.revenueKnown);
+  moneyAfterFees.textContent = figure(totals.afterFeesEurCents, totals.afterFeesKnown);
+  moneyShipping.textContent = figure(totals.shippingEurCents, totals.shippingKnown);
   moneyRevenueOf.textContent = coverage(totals.revenueKnown);
   moneyAfterFeesOf.textContent = coverage(totals.afterFeesKnown);
   moneyShippingOf.textContent = coverage(totals.shippingKnown);
